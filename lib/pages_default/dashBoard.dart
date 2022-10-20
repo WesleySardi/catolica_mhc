@@ -59,27 +59,28 @@ class _DashBoardState extends State<DashBoard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.logout,
-                color: Colors.black,
+          automaticallyImplyLeading: false,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.logout,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Home()));
+                },
               ),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Home()));
-              },
-            ),
-
-            /*Image.asset(
-              "img/off_icon_preto.png",
-              height: 26,
-            ),*/
-          ],
+              Container(
+                child:
+                Image.asset("images/user_icon.png", width: 80, height: 35),
+              )
+            ],
+          ),
+          backgroundColor: Colors.white,
         ),
-      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
