@@ -45,24 +45,28 @@ class _PerfilState extends State<Perfil> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                child: Image.asset(
-                    "images/off_icon_preto.png",
-                    width: 60,
-                    height: 25
-                )
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.black,
               ),
-              Container(
-                child:
-                    Image.asset("images/user_icon.png", width: 80, height: 35),
-              )
-            ],
-          ),
-          backgroundColor: Colors.white,
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Home()));
+              },
+            ),
+            Container(
+              child:
+              Image.asset("images/user_icon.png", width: 80, height: 35),
+            )
+          ],
         ),
+        backgroundColor: Colors.white,
+      ),
         body: SingleChildScrollView(
           child: Container(
               child: Column(
