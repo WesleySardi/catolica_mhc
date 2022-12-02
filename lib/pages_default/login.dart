@@ -1,6 +1,7 @@
 import 'package:catolica_mhc/pages_default/cadastro.dart';
 import 'package:catolica_mhc/pages_default/esqueceusenha.dart';
 import 'package:catolica_mhc/pages_default/dashBoard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dashBoard.dart';
 import 'package:flutter/material.dart';
 
@@ -131,7 +132,6 @@ class _HomeState extends State<Home> {
                             context,
                             MaterialPageRoute(builder: (context) => DashBoard()),
                           );
-
                         },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.white,
