@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "407547194289",
+    "project_id": "catolica-mhc-database",
+    "storage_bucket": "catolica-mhc-database.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407547194289:android:0f9b598fd0159b9ccdeb90",
+        "android_client_info": {
+          "package_name": "com.example.catolica_mhc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407547194289-8bf38gkmcurmqo8i610gpetc256uctll.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvPev3zDvzJ-DOIzD1kZtaWG9IbB--huc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407547194289-8bf38gkmcurmqo8i610gpetc256uctll.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
