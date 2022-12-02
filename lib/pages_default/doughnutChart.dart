@@ -7,8 +7,8 @@ import 'dashBoard.dart';
   final List<ChartData> chartData = [
     ChartData('Estágios', 60, Color.fromRGBO(9,0,136,1)),
     ChartData('Palestras', 15, Color.fromRGBO(147,0,119,1)),
-    ChartData('Cursos', 25, Color.fromRGBO(228,0,124,1)),
-    //ChartData('Outro aí', 57, Color.fromRGBO(255,189,57,1))
+    ChartData('Cursos', 20, Color.fromRGBO(228,0,124,1)),
+    ChartData('Outros', 5, Color.fromRGBO(255,189,57,1)),
   ];
 
 class ChartData {

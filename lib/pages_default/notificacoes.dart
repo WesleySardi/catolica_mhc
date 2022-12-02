@@ -93,7 +93,7 @@ class _NotificacoesState extends State<Notificacoes> {
                     width: 400,
                     child: Container(
                         width: double.maxFinite,
-                        height: 65.0,
+                        height: 70.0,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         margin: const EdgeInsets.symmetric(
@@ -162,7 +162,7 @@ class _NotificacoesState extends State<Notificacoes> {
                     width: 400,
                     child: Container(
                         width: double.maxFinite,
-                        height: 65.0,
+                        height: 70.0,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         margin: const EdgeInsets.symmetric(
@@ -174,7 +174,15 @@ class _NotificacoesState extends State<Notificacoes> {
                               style: BorderStyle.solid),
                           color: const Color(0xFFDFDFDF),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
+                          const BorderRadius.all(Radius.circular(5)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(3, 4), // changes position of shadow
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -223,7 +231,7 @@ class _NotificacoesState extends State<Notificacoes> {
                     width: 400,
                     child: Container(
                         width: double.maxFinite,
-                        height: 65.0,
+                        height: 70.0,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         margin: const EdgeInsets.symmetric(
@@ -235,7 +243,15 @@ class _NotificacoesState extends State<Notificacoes> {
                               style: BorderStyle.solid),
                           color: const Color(0xFFDFDFDF),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
+                          const BorderRadius.all(Radius.circular(5)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(3, 4), // changes position of shadow
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -284,7 +300,7 @@ class _NotificacoesState extends State<Notificacoes> {
                     width: 400,
                     child: Container(
                         width: double.maxFinite,
-                        height: 65.0,
+                        height: 70.0,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         margin: const EdgeInsets.symmetric(
@@ -296,7 +312,15 @@ class _NotificacoesState extends State<Notificacoes> {
                               style: BorderStyle.solid),
                           color: const Color(0xFFDFDFDF),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
+                          const BorderRadius.all(Radius.circular(5)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(3, 4), // changes position of shadow
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -345,7 +369,7 @@ class _NotificacoesState extends State<Notificacoes> {
                     width: 400,
                     child: Container(
                         width: double.maxFinite,
-                        height: 65.0,
+                        height: 70.0,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         margin: const EdgeInsets.symmetric(
@@ -357,7 +381,15 @@ class _NotificacoesState extends State<Notificacoes> {
                               style: BorderStyle.solid),
                           color: const Color(0xFFDFDFDF),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
+                          const BorderRadius.all(Radius.circular(5)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(3, 4), // changes position of shadow
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -406,7 +438,7 @@ class _NotificacoesState extends State<Notificacoes> {
                     width: 400,
                     child: Container(
                         width: double.maxFinite,
-                        height: 65.0,
+                        height: 70.0,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         margin: const EdgeInsets.symmetric(
@@ -418,7 +450,15 @@ class _NotificacoesState extends State<Notificacoes> {
                               style: BorderStyle.solid),
                           color: const Color(0xFFDFDFDF),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
+                          const BorderRadius.all(Radius.circular(5)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(3, 4), // changes position of shadow
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -467,7 +507,7 @@ class _NotificacoesState extends State<Notificacoes> {
                     width: 400,
                     child: Container(
                         width: double.maxFinite,
-                        height: 65.0,
+                        height: 70.0,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         margin: const EdgeInsets.symmetric(
@@ -479,7 +519,15 @@ class _NotificacoesState extends State<Notificacoes> {
                               style: BorderStyle.solid),
                           color: const Color(0xFFDFDFDF),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
+                          const BorderRadius.all(Radius.circular(5)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(3, 4), // changes position of shadow
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -528,7 +576,7 @@ class _NotificacoesState extends State<Notificacoes> {
                     width: 400,
                     child: Container(
                         width: double.maxFinite,
-                        height: 65.0,
+                        height: 70.0,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 10.0),
                         margin: const EdgeInsets.symmetric(
@@ -540,7 +588,15 @@ class _NotificacoesState extends State<Notificacoes> {
                               style: BorderStyle.solid),
                           color: const Color(0xFFDFDFDF),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
+                          const BorderRadius.all(Radius.circular(5)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(3, 4), // changes position of shadow
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [

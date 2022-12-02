@@ -1,13 +1,11 @@
 import 'package:catolica_mhc/pages_default/login.dart';
 import 'package:catolica_mhc/pages_default/perfil.dart';
-import '../functions/appLogic.dart';
-import '../application/main.dart';
-import 'certificados.dart';
-import 'login.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+import '../functions/appLogic.dart';
+import 'certificados.dart';
 import 'doughnutChart.dart';
 import 'notificacoes.dart';
 
@@ -37,9 +35,13 @@ class DashBoard extends StatefulWidget {
   @override
   State<DashBoard> createState() => _DashBoardState();
 }
+
 //---------------------------------------------------------
 class _DashBoardState extends State<DashBoard> {
   late TooltipBehavior _tooltipBehavior;
+
+  String nome = 'Uéixley'; // Trocar depois pra pegar o nome do banco
+
 //---
 /*
   int _counter = 0;
@@ -55,64 +57,90 @@ class _DashBoardState extends State<DashBoard> {
     _tooltipBehavior = TooltipBehavior(enable: true);
     super.initState();
   }
+
 //---------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.logout,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Home()));
-                },
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.black,
               ),
-              Container(
-                child:
-                Image.asset("images/user_icon.png", width: 80, height: 35),
-              )
-            ],
-          ),
-          backgroundColor: Colors.white,
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Home()));
+              },
+            ),
+            Container(
+              child: Image.asset("images/user_icon.png", width: 80, height: 35),
+            )
+          ],
         ),
+        backgroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
-
-            mainAxisAlignment: MainAxisAlignment.end,
             //crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Text(
-                "Suas Estatísticas",
-                style: TextStyle(
-                  fontSize: 22,
+              Container(
+                  alignment: FractionalOffset.topLeft,
+                  margin: EdgeInsets.only(left: 40, top: 20, bottom: 15),
+                  child: Text(
+                    "Olá, \n${nome}!",
+                    style: TextStyle(
+                      fontSize: 30,
+                    ),
+                  )),
+              Container(
+                alignment: FractionalOffset.bottomCenter,
+                child: Text(
+                  "Suas Estatísticas",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
               ),
-
-
               Container(
-                  child: SfCircularChart(
-                      legend: Legend(
-                          isVisible: true,
-                          overflowMode: LegendItemOverflowMode.wrap,
-                          position: LegendPosition.bottom),
-                      // Legenda abaixo do gráfico (default: direita)
-                      tooltipBehavior: _tooltipBehavior,
-                      series: <CircularSeries>[
+                alignment: Alignment.bottomCenter,
+                child: SfCircularChart(
+                  annotations: <CircularChartAnnotation>[
+                    CircularChartAnnotation(
+                        widget: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.green, shape: BoxShape.circle),
+                      child: IconButton(
+                        iconSize: 70,
+                        onPressed: () {
+                          ShowDialogResumo(context);
+                        },
+                        icon: Icon(Icons.pending_actions, size: 50,
+                            color: Color.fromRGBO(255, 255, 255, 1.0)),
+                      ),
+                    ))
+                  ],
+                  legend: Legend(
+                    isVisible: true,
+                    overflowMode: LegendItemOverflowMode.wrap,
+                    position: LegendPosition.bottom,
+                  ),
+                  // Legenda abaixo do gráfico (default: direita)
+                  tooltipBehavior: _tooltipBehavior,
+                  series: <CircularSeries>[
                     // Renders doughnut chart
                     DoughnutSeries<ChartData, String>(
                       dataSource: chartData,
                       pointColorMapper: (ChartData data, _) => data.color,
                       xValueMapper: (ChartData data, _) => data.x,
                       yValueMapper: (ChartData data, _) => data.y,
+                      radius: '112%',
 
                       dataLabelSettings: DataLabelSettings(isVisible: true),
                       enableTooltip: true,
@@ -122,16 +150,15 @@ class _DashBoardState extends State<DashBoard> {
                           true, //Clicar no gráfico destaca a sua estatística
                     ),
                   ],
-                  ),
+                ),
 
-                  // Desenvolvimento de progress bar e resumo
-
-                  ),
-
-
-                Column(
-                  children: <Widget>[
-                    new LinearPercentIndicator(
+                // Desenvolvimento de progress bar e resumo
+              ),
+              Column(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: LinearPercentIndicator(
                       width: MediaQuery.of(context).size.width * 0.6,
                       animation: true,
                       alignment: MainAxisAlignment.center,
@@ -139,14 +166,16 @@ class _DashBoardState extends State<DashBoard> {
                       lineHeight: 20.0,
                       animationDuration: 2500,
                       percent: 0.5,
-                      center: Text("50.0%", style: TextStyle(fontWeight: FontWeight.bold),),
+                      center: const Text(
+                        "50.0%",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       linearStrokeCap: LinearStrokeCap.roundAll,
                       progressColor: Colors.green,
                     ),
-                  ],
-                ),
-
-
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -215,9 +244,8 @@ class _DashBoardState extends State<DashBoard> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Certificados())
-
-                      );
+                          MaterialPageRoute(
+                              builder: (context) => Certificados()));
                     },
                   ),
                   IconButton(
@@ -228,9 +256,8 @@ class _DashBoardState extends State<DashBoard> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Notificacoes())
-
-                      );
+                          MaterialPageRoute(
+                              builder: (context) => Notificacoes()));
                     },
                   ),
                   IconButton(
@@ -239,11 +266,8 @@ class _DashBoardState extends State<DashBoard> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Perfil())
-
-                      );
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Perfil()));
                     },
                   ),
                 ],

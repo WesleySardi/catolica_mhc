@@ -102,7 +102,7 @@ class _CertificadosState extends State<Certificados> {
                         child: InkWell(
                           child: Container(
                               width: double.maxFinite,
-                              height: 130.0,
+                              height: 140.0,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 10.0),
                               margin: const EdgeInsets.symmetric(
@@ -161,7 +161,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 15),
                                           ),
                                         ),
                                       ),
@@ -177,7 +177,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 13),
                                           ),
                                         ),
                                       ),
@@ -193,7 +193,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 13),
                                           ),
                                         ),
                                       ),
@@ -209,7 +209,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 13),
                                           ),
                                         ),
                                       ),
@@ -226,7 +226,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Colors.blueAccent,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 13),
                                           ),
                                         ),
                                       ),
@@ -250,7 +250,7 @@ class _CertificadosState extends State<Certificados> {
                         child: InkWell(
                           child: Container(
                               width: double.maxFinite,
-                              height: 130.0,
+                              height: 140.0,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 10.0),
                               margin: const EdgeInsets.symmetric(
@@ -307,7 +307,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 15),
                                           ),
                                         ),
                                       ),
@@ -323,7 +323,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 13),
                                           ),
                                         ),
                                       ),
@@ -339,7 +339,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 13),
                                           ),
                                         ),
                                       ),
@@ -355,7 +355,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 13),
                                           ),
                                         ),
                                       ),
@@ -372,7 +372,7 @@ class _CertificadosState extends State<Certificados> {
                                             style: TextStyle(
                                                 color: Colors.blueAccent,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13.5),
+                                                fontSize: 13),
                                           ),
                                         ),
                                       ),
