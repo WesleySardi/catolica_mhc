@@ -276,9 +276,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
         floatingActionButton: FloatingActionButton(
           //Floating action button on Scaffold
           onPressed: () {
-            //1,2,"Engenharia de Software", "PUC-SC", "Curso", "Enviado", 40.5, "Teste", "fafafa"
-            //code to execute on button press
-            var certificados = new Certificados();
+
           },
           child: Icon(Icons.check), //icon inside button
           backgroundColor: Color(0xFFb81317),
