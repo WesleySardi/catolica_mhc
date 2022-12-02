@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '../functions/appLogic.dart';
+import '../application/main.dart';
 import 'certificados.dart';
+import 'login.dart';
 import 'notificacoes.dart';
 import 'dashBoard.dart';
 /*
@@ -51,12 +54,11 @@ class _PerfilState extends State<Perfil> {
           children: [
             IconButton(
               icon: const Icon(
-                Icons.logout,
+                Icons.arrow_back,
                 color: Colors.black,
               ),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Home()));
+                Navigator.pop(context);
               },
             ),
             Container(
@@ -170,6 +172,7 @@ class _PerfilState extends State<Perfil> {
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
+            ShowModal(context);
           },
           child: Icon(Icons.add), //icon inside button
           backgroundColor: Color(0xFFb81317),

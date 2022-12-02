@@ -1,7 +1,5 @@
 import 'package:catolica_mhc/pages_black_mode/cadastro_dm.dart';
 import 'package:catolica_mhc/pages_black_mode/esqueceusenha_dm.dart';
-import 'package:catolica_mhc/pages_default/cadastro.dart';
-import 'package:catolica_mhc/pages_default/esqueceusenha.dart';
 import 'package:flutter/material.dart';
 
 class HomeDM extends StatefulWidget {

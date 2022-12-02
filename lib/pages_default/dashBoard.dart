@@ -1,5 +1,7 @@
 import 'package:catolica_mhc/pages_default/login.dart';
 import 'package:catolica_mhc/pages_default/perfil.dart';
+import '../functions/appLogic.dart';
+import '../application/main.dart';
 import 'certificados.dart';
 import 'login.dart';
 import 'package:flutter/material.dart';
@@ -154,6 +156,7 @@ class _DashBoardState extends State<DashBoard> {
         //Floating action button on Scaffold
         onPressed: () {
           //code to execute on button press
+          ShowModal(context);
         },
         child: Icon(Icons.add), //icon inside button
         backgroundColor: Color(0xFFb81317),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '../functions/appLogic.dart';
+import '../application/main.dart';
 import 'dashBoard.dart';
+import 'login.dart';
 import 'perfil.dart';
 
 import 'certificados.dart';
@@ -52,12 +55,11 @@ class _NotificacoesState extends State<Notificacoes> {
           children: [
             IconButton(
               icon: const Icon(
-                Icons.logout,
+                Icons.arrow_back,
                 color: Colors.black,
               ),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Home()));
+                Navigator.pop(context);
               },
             ),
             Container(
@@ -592,6 +594,7 @@ class _NotificacoesState extends State<Notificacoes> {
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
+            ShowModal(context);
           },
           child: Icon(Icons.add), //icon inside button
           backgroundColor: Color(0xFFb81317),

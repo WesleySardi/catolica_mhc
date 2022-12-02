@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../application/main.dart';
 import 'dashBoard.dart';
+import 'login.dart';
 import 'perfil.dart';
 import 'certificados.dart';
 import 'notificacoes.dart';
@@ -52,12 +54,11 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           children: [
             IconButton(
               icon: const Icon(
-                Icons.logout,
+                Icons.arrow_back,
                 color: Colors.black,
               ),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Home()));
+                Navigator.pop(context);
               },
             ),
             Container(
@@ -277,7 +278,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           onPressed: () {
             //code to execute on button press
           },
-          child: Icon(Icons.add), //icon inside button
+          child: Icon(Icons.check), //icon inside button
           backgroundColor: Color(0xFFb81317),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
