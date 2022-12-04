@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../application/main.dart';
-import 'dashBoard.dart';
-import 'login.dart';
-import 'perfil.dart';
+
+import '../funcionalidades/cruds/entities/certificadosCrud.dart';
 import 'certificados.dart';
+import 'dashBoard.dart';
 import 'notificacoes.dart';
+import 'perfil.dart';
 /*
 void main() {
   runApp(const MyApp());
@@ -276,7 +277,23 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
         floatingActionButton: FloatingActionButton(
           //Floating action button on Scaffold
           onPressed: () {
+            CertificadosCrud certificados = CertificadosCrud(3, 1234, "Engenharia de Software", "PUC-SC", "teste", "Enviado", 42, "Teste", "teste");
 
+            var collection_certificados = FirebaseFirestore.instance.collection('certificados_mhc');
+
+            collection_certificados.doc().set(
+                {
+                  'usu_id':certificados.id,
+                  'usu_numero_de_matricula':certificados.numero_de_matricula,
+                  'usu_nome_do_curso':certificados.nome_do_curso,
+                  'usu_instituicao':certificados.instituicao,
+                  'usu_tipo_certificado':certificados.tipo_certificado,
+                  'usu_status':certificados.status,
+                  'usu_carga_horaria':certificados.carga_horaria,
+                  'usu_motivo': certificados.motivo,
+                  'uso_imagem':certificados.imagem
+                }
+            ).then((value) => print('Deu certo!')).catchError((error) => print('Deu errado! $error'));
           },
           child: Icon(Icons.check), //icon inside button
           backgroundColor: Color(0xFFb81317),

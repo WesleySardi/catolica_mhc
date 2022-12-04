@@ -1,4 +1,4 @@
-class Certificados {
+class CertificadosCrud {
 
   int _id;
   int _numero_de_matricula;
@@ -10,7 +10,7 @@ class Certificados {
   String _motivo;
   String _imagem;
 
-  Certificados(
+  CertificadosCrud(
       this._id,
       this._numero_de_matricula,
       this._nome_do_curso,
@@ -77,6 +77,6 @@ class Certificados {
 
   @override
   String toString() {
-    return 'Certificados{_id: $_id, _numero_de_matricula: $_numero_de_matricula, _nome_do_curso: $_nome_do_curso, _instituicao: $_instituicao, _tipo_certificado: $_tipo_certificado, _status: $_status, _carga_horaria: $_carga_horaria, _motivo: $_motivo, _imagem: $_imagem}';
+    return 'CertificadosCrud{_id: $_id, _numero_de_matricula: $_numero_de_matricula, _nome_do_curso: $_nome_do_curso, _instituicao: $_instituicao, _tipo_certificado: $_tipo_certificado, _status: $_status, _carga_horaria: $_carga_horaria, _motivo: $_motivo, _imagem: $_imagem}';
   }
 }
