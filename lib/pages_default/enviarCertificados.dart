@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../funcionalidades/cruds/entities/certificadosCrud.dart';
+import '../funcionalidades/cruds/entities/CertificadosCrud.dart';
 import 'certificados.dart';
 import 'dashBoard.dart';
 import 'notificacoes.dart';
