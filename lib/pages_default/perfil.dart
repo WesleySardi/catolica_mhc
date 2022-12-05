@@ -82,6 +82,8 @@ class _PerfilState extends State<Perfil> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
+    bool keyboardIsOpened = MediaQuery.of(context).viewInsets.bottom != 0.0;
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -278,7 +280,7 @@ class _PerfilState extends State<Perfil> {
             ],
           )),
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: keyboardIsOpened ? null : FloatingActionButton(
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press

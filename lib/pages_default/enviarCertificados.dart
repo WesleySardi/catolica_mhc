@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,6 +10,9 @@ import 'perfil.dart';
 import 'certificados.dart';
 import 'notificacoes.dart';
 import 'dart:io';
+
+const List<String> list = <String>['Palestra', 'Estágio', 'Outros'];
+// Aqui colocar dinamicamente quais são ou deixar estático, sei lá
 
 /*
 void main() {
@@ -39,25 +43,69 @@ class EnviarCertificados extends StatefulWidget {
 
 class _EnviarCertificadosState extends State<EnviarCertificados> {
   int _counter = 0;
-  File? image;
+  File? image; // Variável de armazenamento local
 
-  Future pickImage() async{
-    try{
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if(image == null) return;
+  String dropDownValue = list.first;
 
-      final imageTemporary = File(image.path);
-      setState(() => this.image = imageTemporary);
-    } on PlatformException catch (e) {
-      print('Falha na obtenção da imagem: $e');
+  // modal de foto pra iOS e Android
+  Future<ImageSource?> showImageSource(BuildContext context) async {
+    if(Platform.isIOS){
+      return showCupertinoModalPopup<ImageSource>(
+          context: context,
+          builder: (context) => CupertinoActionSheet(
+            actions: [
+              CupertinoActionSheetAction(
+                child: Text('Câmera'),
+                onPressed: () => pickImage(ImageSource.camera),
+              ),
+              CupertinoActionSheetAction(
+                child: Text('Galeria'),
+                onPressed: () => pickImage(ImageSource.gallery),
+              ),
+            ],
+          )
+      );
+    } else {
+      return showModalBottomSheet(
+          context: context,
+          builder: (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Câmera'),
+                onTap: () => pickImage(ImageSource.camera),
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Galeria'),
+                onTap: () => pickImage(ImageSource.gallery),
+              )
+            ],
+          )
+      );
     }
-
   }
+
+  /*
+   Lógica pra abrir de onde vai pegar a foto e armazenar ela na variável local
+   image, definida ali em cima ^^
+  */
+  Future pickImage(ImageSource source) async{
+     try{
+       final image = await ImagePicker().pickImage(source: source);
+       if(image == null) return;
+
+       final imageTemporary = File(image.path);
+       setState(() => this.image = imageTemporary);
+     } on PlatformException catch (e) {
+       print('Falha na obtenção da imagem: $e');
+     }
+   }
 
   // initialize the controllers
   TextEditingController _controllerDegreeName = TextEditingController();
   TextEditingController _controllerInstitution = TextEditingController();
-  TextEditingController _controllerCertificateType = TextEditingController();
   TextEditingController _controllerWorkload = TextEditingController();
 
   CertificadosCrud sendCertificate = CertificadosCrud(
@@ -69,9 +117,9 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
       'Em analise', // estudante não define
       40,
       'sem motivo', // estudante não define
-      'https://via.placeholder.com/150');
+      'https://via.placeholder.com/1920x1360?text=Adicione+seu+certificado...');
 
-  Future<CertificadosCrud> getDataCertificados() async {
+  Future<CertificadosCrud> getDataEnviarCertificados() async {
     sendCertificate.id;
     sendCertificate.numero_de_matricula;
     sendCertificate.nome_do_curso;
@@ -86,7 +134,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
 
   void initState(){
     super.initState();
-    getDataCertificados();
+    getDataEnviarCertificados();
   }
 
   void _incrementCounter() {
@@ -99,6 +147,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+
+    bool keyboardIsOpened = MediaQuery.of(context).viewInsets.bottom != 0.0;
 
     return Scaffold(
         appBar: AppBar(
@@ -200,7 +250,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                     : Image.network(sendCertificate.imagem,
                                     fit: BoxFit.cover,),
                                 onTap: () {
-                                  pickImage();
+                                  showImageSource(context);
                                 },
                               ),
                             ),
@@ -322,15 +372,29 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                    title: TextField(
-                                        controller: _controllerCertificateType,
-                                        obscureText: false,
-                                        decoration: InputDecoration(
-                                            border: UnderlineInputBorder(),
-                                            label: Text('Tipo de Certificado'),
-                                            hintText: "Tipo do certificado (palestra, curso, outros)"
-                                        )
-                                    ),
+                                    title: DropdownButton<String>(
+                                      value: dropDownValue,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      elevation: 16,
+                                      style: const TextStyle(color: Colors.deepPurple),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                      onChanged: (String? value) {
+                                        // This is called when the user selects an item.
+                                        setState(() {
+                                          dropDownValue = value!;
+                                          print("Opção selecionada: $dropDownValue");
+                                        });
+                                      },
+                                      items: list.map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    )
                                   ),
                                 ),
                               ),
@@ -345,7 +409,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
             ],
           )),
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: keyboardIsOpened ? null : FloatingActionButton(
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
