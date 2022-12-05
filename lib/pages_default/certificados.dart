@@ -36,25 +36,25 @@ class Certificados extends StatefulWidget {
   State<Certificados> createState() => _CertificadosState();
 }
 
-Column criarContainersCertificados(String instituicao, String img, double carga_horaria, String tipo_certificacao, String status, tam) {
-  return Column(
-    children: [
-      for(int i = 0; i < tam; i++)
-        Container(
-          alignment: Alignment.centerLeft,
-          margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-          child: const Text(
-            'Certificados',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-                color: Color(0xFF000000),
-                fontWeight: FontWeight.bold,
-                fontSize: 20),
-          ),
-        ),
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [SizedBox(
+ListView criarContainersCertificados(String instituicaoList, String imgList, double carga_horariaList, String tipo_certificacaoList, String statusList) {
+  /*
+  ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: entries.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 50,
+                    color: Colors.amber[colorCodes[index]],
+                    child: Center(child: Text('Entry ${entries[index]}')),
+                  );
+                }
+  )
+   */
+
+  return ListView.builder(
+      itemCount: instituicaoList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return SizedBox(
           width: 400,
           child: InkWell(
             child: Container(
@@ -96,7 +96,7 @@ Column criarContainersCertificados(String instituicao, String img, double carga_
                             size: Size.fromRadius(55),
                             // Image radius
                             child: Image.asset(
-                              img,
+                              "images/certificado.jpg",
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -112,7 +112,7 @@ Column criarContainersCertificados(String instituicao, String img, double carga_
                             padding: EdgeInsets.fromLTRB(
                                 0, 0, 0, 0),
                             child: Text(
-                              'Instituicao: '+instituicao,
+                              'Instituicao: ${instituicaoList[index]}',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: Color(0xFF000000),
@@ -128,7 +128,7 @@ Column criarContainersCertificados(String instituicao, String img, double carga_
                             padding: EdgeInsets.fromLTRB(
                                 0, 0, 0, 0),
                             child: Text(
-                              'Status: '+status,
+                              'Status: ${statusList[index]}',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: Color(0xFF000000),
@@ -144,7 +144,7 @@ Column criarContainersCertificados(String instituicao, String img, double carga_
                             padding: EdgeInsets.fromLTRB(
                                 0, 0, 0, 0),
                             child: Text(
-                              'Carga Horária: '+carga_horaria.toString(),
+                              'Carga Horária: ${carga_horariaList.toString()[index]}',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: Color(0xFF000000),
@@ -160,7 +160,7 @@ Column criarContainersCertificados(String instituicao, String img, double carga_
                             padding: EdgeInsets.fromLTRB(
                                 0, 0, 0, 0),
                             child: Text(
-                              'Tipo de certificacao: '+tipo_certificacao,
+                              'Tipo de certificacao: ${tipo_certificacaoList[index]}',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: Color(0xFF000000),
@@ -192,41 +192,46 @@ Column criarContainersCertificados(String instituicao, String img, double carga_
                 )),
             onTap: () {
               /*setState(() {
-          if (selectedOption == true) {
-            selectedOption = false;
-          } else {
-            selectedOption = true;
-          }
-        });*/
+            if (selectedOption == true) {
+              selectedOption = false;
+            } else {
+              selectedOption = true;
+            }
+          });*/
             },
           ),
-        )],
-      ),
-    ],
+        );
+      }
   );
 }
 
-Future _getCertificadosFirebase() async {
+Future getCertificadosFirebase(List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
 
   final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get()); //.limit(1).
 
   final List<DocumentSnapshot> documents = result.docs;
 
-  String instituicao;
-  String img;
-  double carga_horaria;
-  String tipo_certificacao;
-  String status;
-  int tam = documents.length;
+  late String instituicao;
+  late String img;
+  late double carga_horaria;
+  late String tipo_certificacao;
+  late String status;
 
   documents.forEach((element) {
     instituicao = element.get("usu_instituicao").toString();
-    img = element.get("uso_imagem").toString();
-    carga_horaria = double.parse(element.get("usu_carga_horaria").toString());
-    status = element.get("usu_status").toString();
-    tipo_certificacao = element.get("usu_tipo_certificado").toString();
+    instituicaoList.add(instituicao);
 
-    criarContainersCertificados(instituicao, img, carga_horaria, tipo_certificacao, status);
+    img = element.get("uso_imagem").toString();
+    imgList.add(img);
+
+    carga_horaria = double.parse(element.get("usu_carga_horaria").toString());
+    carga_horariaList.add(carga_horaria);
+
+    status = element.get("usu_status").toString();
+    statusList.add(status);
+
+    tipo_certificacao = element.get("usu_tipo_certificado").toString();
+    tipo_certificacaoList.add(tipo_certificacao);
   });
 }
 
@@ -254,10 +259,22 @@ class _CertificadosState extends State<Certificados> {
   int _counter = 0;
   bool selectedOption = false;
 
+  late List<String> instituicaoList = <String>[];
+  late List<String> imgList = <String>[];
+  late List<double> carga_horariaList = <double>[];
+  late List<String> tipo_certificacaoList = <String>[];
+  late List<String> statusList = <String>[];
+
+
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
+  }
+
+  void initState() {
+    super.initState();
+    getCertificadosFirebase(instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
   }
 
   @override
@@ -295,15 +312,190 @@ class _CertificadosState extends State<Certificados> {
           backgroundColor: Colors.white,
         ),
         body: SingleChildScrollView(
+          physics: ScrollPhysics(),
           child: Container(
-              child: ),
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                    child: const Text(
+                      'Certificados',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Color(0xFF000000),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: instituicaoList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              child: InkWell(
+                                child: Container(
+                                    width: double.maxFinite,
+                                    height: 130.0,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10.0),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 8.0),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey,
+                                          width: 0.5,
+                                          style: BorderStyle.solid),
+                                      color: Colors.white24,/*selectedOption == true
+                                    ? Colors.cyan
+                                    : const Color(0xFFDFDFDF),*/
+                                      //const Color(0xFFDFDFDF)
+                                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 2,
+                                          blurRadius: 4,
+                                          offset:
+                                          Offset(3, 4), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                            padding:
+                                            const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(10),
+                                              // Image border
+                                              child: SizedBox.fromSize(
+                                                size: Size.fromRadius(55),
+                                                // Image radius
+                                                child: Image.asset(
+                                                  "images/certificado.jpg",
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            )),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Container(
+                                              margin:
+                                              const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                              child: Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Instituicao: ${instituicaoList[index]}',
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                      color: Color(0xFF000000),
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 13.5),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin:
+                                              const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                              child: Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Status: ${statusList[index]}',
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                      color: Color(0xFF000000),
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 13.5),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin:
+                                              const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                              child: Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Carga Horária: ${carga_horariaList.toString()[index]}',
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                      color: Color(0xFF000000),
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 13.5),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin:
+                                              const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                              child: Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Tipo de certificacao: ${tipo_certificacaoList[index]}',
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                      color: Color(0xFF000000),
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 13.5),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              alignment: Alignment.centerRight,
+                                              margin:
+                                              const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                              child: const Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Ver mais...',
+                                                  textAlign: TextAlign.end,
+                                                  style: TextStyle(
+                                                      color: Colors.blueAccent,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 13.5),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    )),
+                                onTap: () {
+                                  /*setState(() {
+                                  if (selectedOption == true) {
+                                    selectedOption = false;
+                                  } else {
+                                    selectedOption = true;
+                                  }
+                                  });*/
+                                },
+                              ),
+                            );
+                          }
+                      )
+                    ],
+                  ),
+                ],
+              ), // --------------------------------------------------------------------------------------------------
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
             ShowModal(context);
-            _getCertificadosFirebase();
           },
           child: Icon(selectedOption == true ? Icons.edit : Icons.add),
           //icon inside button
@@ -363,6 +555,24 @@ class _CertificadosState extends State<Certificados> {
                           color: Colors.white,
                         ),
                         onPressed: () {
+                          setState(() {
+                            getCertificadosFirebase(instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
+
+                            /*var collection = FirebaseFirestore.instance.collection('certificados_mhc');
+                            collection.doc().set(
+                                {
+                                  'uso_imagem': "teste",
+                                  'usu_carga_horaria': 42,
+                                  'usu_id': 3,
+                                  'usu_instituicao': "PUC-SC",
+                                  'usu_motivo': "Teste",
+                                  'usu_nome_do_curso': "Engenharia de Software",
+                                  'usu_numero_de_matricula': 1234,
+                                  'usu_status': "Enviado",
+                                  'usu_tipo_certificado': "teste",
+                                }
+                            );*/
+                          });
                           Navigator.push(
                               context,
                               MaterialPageRoute(
