@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import '../application/main.dart';
+import '../funcionalidades/crud_certificados/entities/CertificadosCrud.dart';
 import 'dashBoard.dart';
 import 'login.dart';
 import 'perfil.dart';
 import 'certificados.dart';
 import 'notificacoes.dart';
+import 'dart:io';
+
 /*
 void main() {
   runApp(const MyApp());
@@ -34,6 +39,55 @@ class EnviarCertificados extends StatefulWidget {
 
 class _EnviarCertificadosState extends State<EnviarCertificados> {
   int _counter = 0;
+  File? image;
+
+  Future pickImage() async{
+    try{
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() => this.image = imageTemporary);
+    } on PlatformException catch (e) {
+      print('Falha na obtenção da imagem: $e');
+    }
+
+  }
+
+  // initialize the controllers
+  TextEditingController _controllerDegreeName = TextEditingController();
+  TextEditingController _controllerInstitution = TextEditingController();
+  TextEditingController _controllerCertificateType = TextEditingController();
+  TextEditingController _controllerWorkload = TextEditingController();
+
+  CertificadosCrud sendCertificate = CertificadosCrud(
+      1, // estudante não define
+      1234567, // estudante não define
+      'Curso de Java',
+      'Cursa Cursos Online',
+      'tipo_do_certificado',
+      'Em analise', // estudante não define
+      40,
+      'sem motivo', // estudante não define
+      'https://via.placeholder.com/150');
+
+  Future<CertificadosCrud> getDataCertificados() async {
+    sendCertificate.id;
+    sendCertificate.numero_de_matricula;
+    sendCertificate.nome_do_curso;
+    sendCertificate.tipo_certificado;
+    sendCertificate.status;
+    sendCertificate.carga_horaria;
+    sendCertificate.motivo;
+    sendCertificate.imagem;
+    await 100;
+    return sendCertificate;
+  }
+
+  void initState(){
+    super.initState();
+    getDataCertificados();
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -48,27 +102,40 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
 
     return Scaffold(
         appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
+          automaticallyImplyLeading: false,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            Container(
-              child:
-              Image.asset("images/user_icon.png", width: 80, height: 35),
-            )
-          ],
+              Container(
+                child: PopupMenuButton(
+                    iconSize: 10,
+                    icon: Image.asset("images/user_icon.png",
+                        width: 80, height: 35),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(value: 0, child: Text('Logout')),
+                      ];
+                    },
+                    onSelected: (value) {
+                      if (value == 0) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Home()));
+                      }
+                    }),
+              )
+            ],
+          ),
+          backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.white,
-      ),
         body: SingleChildScrollView(
           child: Container(
               child: Column(
@@ -123,8 +190,19 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                             // Image border
                             child: SizedBox.fromSize(
                               size: Size.fromRadius(85), // Image radius
-                              child: Image.asset("images/certificado.jpg",
-                                  fit: BoxFit.cover),
+                              child: InkWell(
+                                child: image != null ? Image.file(
+                                  image!,
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                )
+                                    : Image.network(sendCertificate.imagem,
+                                    fit: BoxFit.cover,),
+                                onTap: () {
+                                  pickImage();
+                                },
+                              ),
                             ),
                           ),
                         )
@@ -166,26 +244,16 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                      title: const Text(
-                                        "Nome:",
-                                        style: TextStyle(
-                                          color: Color(0xFF720507),
-                                          fontSize: 16.0,
-                                          fontFamily: "Source Sans Pro",
-                                          fontWeight: FontWeight.bold,
+                                      title: TextField(
+                                        controller: _controllerDegreeName,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                          border: UnderlineInputBorder(),
+                                          label: Text('Nome do Curso'),
+                                          hintText: "Digite o nome do curso..."
+                                        )
                                         ),
                                       ),
-                                      subtitle: Container(
-                                          padding:
-                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                          child: const Text(
-                                            "Curso JAVA 40 horas",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15.0,
-                                              fontFamily: "Source Sans Pro",
-                                            ),
-                                          ))),
                                 ),
                               ),
                               Container(
@@ -202,27 +270,16 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                      title: const Text(
-                                        "Instituição:",
-                                        style: TextStyle(
-                                          color: Color(0xFF720507),
-                                          fontSize: 16.0,
-                                          fontFamily: "Source Sans Pro",
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      subtitle: Container(
-                                          padding:
-                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                          child: const Text(
-                                            "Universidade PUC-SC",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15.0,
-                                              fontFamily: "Source Sans Pro",
-                                              //fontWeight: FontWeight.bold,
-                                            ),
-                                          ))),
+                                    title: TextField(
+                                        controller: _controllerInstitution,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            label: Text('Instituição'),
+                                            hintText: "Digite o nome da instituição..."
+                                        )
+                                    ),
+                                  ),
                                 ),
                               ),
                               Container(
@@ -239,27 +296,42 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                      title: const Text(
-                                        "Carga Horária:",
-                                        style: TextStyle(
-                                          color: Color(0xFF720507),
-                                          fontSize: 16.0,
-                                          fontFamily: "Source Sans Pro",
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      subtitle: Container(
-                                          padding:
-                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                          child: const Text(
-                                            "50 horas",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15.0,
-                                              fontFamily: "Source Sans Pro",
-                                              //fontWeight: FontWeight.bold,
-                                            ),
-                                          ))),
+                                    title: TextField(
+                                        controller: _controllerWorkload,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            label: Text('Carga horária'),
+                                            hintText: "Digite as horas do certificado..."
+                                        )
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 1,
+                                      blurRadius: 15,
+                                      offset: Offset(
+                                          9, 7), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: Card(
+                                  child: ListTile(
+                                    title: TextField(
+                                        controller: _controllerCertificateType,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            label: Text('Tipo de Certificado'),
+                                            hintText: "Tipo do certificado (palestra, curso, outros)"
+                                        )
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -277,6 +349,13 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
+            /*
+
+            Colocar o código que envia o certificado para o banco de dados :)
+
+             */
+
+
           },
           child: Icon(Icons.check), //icon inside button
           backgroundColor: Color(0xFFb81317),
@@ -325,8 +404,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DashBoard())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => DashBoard()));
                         },
                       ),
                       IconButton(
@@ -337,8 +416,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Certificados())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => Certificados()));
                         },
                       ),
                       IconButton(
@@ -349,8 +428,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Notificacoes())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => Notificacoes()));
                         },
                       ),
                       IconButton(
@@ -361,8 +440,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Perfil())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => Perfil()));
                         },
                       ),
                     ],

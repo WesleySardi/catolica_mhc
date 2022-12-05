@@ -79,7 +79,21 @@ class _DashBoardState extends State<DashBoard> {
               },
             ),
             Container(
-              child: Image.asset("images/user_icon.png", width: 80, height: 35),
+              child: PopupMenuButton(
+                  iconSize: 10,
+                  icon: Image.asset("images/user_icon.png",
+                      width: 80, height: 35),
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(value: 0, child: Text('Logout')),
+                    ];
+                  },
+                  onSelected: (value) {
+                    if (value == 0) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Home()));
+                    }
+                  }),
             )
           ],
         ),
@@ -121,7 +135,8 @@ class _DashBoardState extends State<DashBoard> {
                         onPressed: () {
                           ShowDialogResumo(context);
                         },
-                        icon: Icon(Icons.pending_actions, size: 50,
+                        icon: Icon(Icons.pending_actions,
+                            size: 50,
                             color: Color.fromRGBO(255, 255, 255, 1.0)),
                       ),
                     ))

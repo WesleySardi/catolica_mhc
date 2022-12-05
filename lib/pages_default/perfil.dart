@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../functions/appLogic.dart';
 import '../application/main.dart';
+import '../funcionalidades/crud_certificados/entities/student.dart';
 import 'certificados.dart';
 import 'login.dart';
 import 'notificacoes.dart';
 import 'dashBoard.dart';
+
 /*
 void main() {
   runApp(const MyApp());
@@ -35,6 +37,40 @@ class Perfil extends StatefulWidget {
 class _PerfilState extends State<Perfil> {
   int _counter = 0;
 
+  bool _activateFieldPhone = false,
+      _activateFieldEmail = false,
+      _activateFieldPassword = false;
+
+  Student estudante = Student(
+      degree: 'curso',
+      email: 'email@gmail.com',
+      name: 'nome',
+      phone: 'telefone',
+      password: 'senha');
+
+  Future<Student> getDataStudent() async {
+    estudante.degree = 'curso';
+    estudante.email = 'email@gmail.com';
+    estudante.name = 'nome';
+    estudante.phone = '(47) 99999-9999';
+    estudante.password = 'senha';
+    await 100;
+    return estudante;
+  }
+
+  // initialize the controllers
+  TextEditingController _controllerPhone = TextEditingController();
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerPassword = TextEditingController();
+
+  void initState() {
+    super.initState();
+    getDataStudent();
+    _controllerPhone.text = estudante.phone ?? "";
+    _controllerEmail.text = estudante.email ?? "";
+    _controllerPassword.text = estudante.password ?? "";
+  }
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -48,27 +84,41 @@ class _PerfilState extends State<Perfil> {
 
     return Scaffold(
         appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
+          automaticallyImplyLeading: false,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            Container(
-              child:
-              Image.asset("images/user_icon.png", width: 80, height: 35),
-            )
-          ],
+              Container(
+                child: PopupMenuButton(
+                    iconSize: 10,
+                    icon: Image.asset("images/user_icon.png",
+                        width: 80, height: 35),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(value: 0, child: Text('Logout')),
+                      ];
+                    },
+                    onSelected: (value) {
+                      if (value == 0) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Home()));
+                      }
+                    }
+                    ),
+              )
+            ],
+          ),
+          backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.white,
-      ),
         body: SingleChildScrollView(
           child: Container(
               child: Column(
@@ -87,14 +137,14 @@ class _PerfilState extends State<Perfil> {
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   CircleAvatar(
                     backgroundColor: Color(0xFF720507),
                     radius: 50.0,
                     backgroundImage: AssetImage('images/user_icon.png'),
                   ),
                   Text(
-                    "João Ferreira",
+                    estudante.name ?? "",
                     style: TextStyle(
                       fontSize: 40.0,
                       color: Colors.black,
@@ -103,7 +153,8 @@ class _PerfilState extends State<Perfil> {
                     ),
                   ),
                   Text(
-                    'Engenharia de Software',
+                    estudante.degree ?? "",
+                    /*esse ??"" significa que se n tiver valor, ele deixa nulo*/
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20.0,
@@ -121,13 +172,31 @@ class _PerfilState extends State<Perfil> {
                         Icons.phone,
                         color: Color(0xFF720507),
                       ),
-                      title: Text(
-                        "47 99999-9999",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontFamily: "Source Sans Pro",
-                        ),
+                      title: Row(
+                        children: [
+                          Flexible(
+                            child: TextField(
+                              controller: _controllerPhone,
+                              obscureText: false,
+                              enabled: _activateFieldPhone,
+                              decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                                label: Text('Telefone'),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (_activateFieldPhone == false) {
+                                    _activateFieldPhone = true;
+                                  } else {
+                                    _activateFieldPhone = false;
+                                  }
+                                });
+                              },
+                              icon: Icon(Icons.edit)),
+                        ],
                       ),
                     ),
                   ),
@@ -137,32 +206,73 @@ class _PerfilState extends State<Perfil> {
                         Icons.account_circle,
                         color: Color(0xFF720507),
                       ),
-                      title: Text(
-                        "teste@gmail.com",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontFamily: "Source Sans Pro",
-                        ),
+                      title: Row(
+                        children: [
+                          Flexible(
+                            child: TextField(
+                              controller: _controllerEmail,
+                              obscureText: false,
+                              enabled: _activateFieldEmail,
+                              decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                                label: Text('Email'),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (_activateFieldEmail == false) {
+                                    _activateFieldEmail = true;
+                                  } else {
+                                    _activateFieldEmail = false;
+                                  }
+                                });
+                              },
+                              icon: Icon(Icons.edit)),
+                        ],
                       ),
                     ),
                   ),
                   Card(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.lock,
-                        color: Color(0xFF720507),
-                      ),
-                      title: Text(
-                        "************",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontFamily: "Source Sans Pro",
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(
+                            Icons.lock,
+                            color: Color(0xFF720507),
+                          ),
+                          title: Row(
+                            children: [
+                              Flexible(
+                                child: TextField(
+                                  controller: _controllerPassword,
+                                  obscureText: true,
+                                  enabled: _activateFieldPassword,
+                                  decoration: InputDecoration(
+                                    border: UnderlineInputBorder(),
+                                    label: Text('Senha'),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (_activateFieldPassword == false) {
+                                        _activateFieldPassword = true;
+                                      } else {
+                                        _activateFieldPassword = false;
+                                      }
+                                    });
+                                  },
+                                  icon: Icon(Icons.edit)),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ],
@@ -221,8 +331,8 @@ class _PerfilState extends State<Perfil> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DashBoard())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => DashBoard()));
                         },
                       ),
                       IconButton(
@@ -233,8 +343,8 @@ class _PerfilState extends State<Perfil> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Certificados())
-                          );
+                              MaterialPageRoute(
+                                  builder: (context) => Certificados()));
                         },
                       ),
                       IconButton(
@@ -245,8 +355,8 @@ class _PerfilState extends State<Perfil> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Notificacoes())
-                          );
+                              MaterialPageRoute(
+                                  builder: (context) => Notificacoes()));
                         },
                       ),
                       IconButton(
@@ -257,15 +367,21 @@ class _PerfilState extends State<Perfil> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Perfil())
-                          );
+                              MaterialPageRoute(
+                                  builder: (context) => Perfil()));
                         },
                       ),
                     ],
                   ),
                 ),
               ),
-            ))
-    );
+            )));
+  }
+
+  void dispose() {
+    _controllerPhone.dispose();
+    _controllerEmail.dispose();
+    _controllerPassword.dispose();
+    super.dispose();
   }
 }

@@ -46,14 +46,8 @@ class _CertificadosState extends State<Certificados> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
         appBar: AppBar(
@@ -71,8 +65,21 @@ class _CertificadosState extends State<Certificados> {
                 },
               ),
               Container(
-                child:
-                Image.asset("images/user_icon.png", width: 80, height: 35),
+                child: PopupMenuButton(
+                    iconSize: 10,
+                    icon: Image.asset("images/user_icon.png",
+                        width: 80, height: 35),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(value: 0, child: Text('Logout')),
+                      ];
+                    },
+                    onSelected: (value) {
+                      if (value == 0) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Home()));
+                      }
+                    }),
               )
             ],
           ),
@@ -81,320 +88,310 @@ class _CertificadosState extends State<Certificados> {
         body: SingleChildScrollView(
           child: Container(
               child: Column(
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                child: const Text(
+                  'Certificados',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                      color: Color(0xFF000000),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-                    child: const Text(
-                      'Certificados',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Color(0xFF000000),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
+                  SizedBox(
+                    width: 400,
+                    child: InkWell(
+                      child: Container(
+                          width: double.maxFinite,
+                          height: 140.0,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10.0),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 12.0, vertical: 8.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.grey,
+                                width: 0.5,
+                                style: BorderStyle.solid),
+                            color: selectedOption == true
+                                ? Colors.cyan
+                                : const Color(0xFFDFDFDF),
+                            //const Color(0xFFDFDFDF)
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(5)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 4,
+                                offset:
+                                    Offset(3, 4), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    // Image border
+                                    child: SizedBox.fromSize(
+                                      size: Size.fromRadius(55),
+                                      // Image radius
+                                      child: Image.asset(
+                                        "images/certificado.jpg",
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Certificado: Curso java 40 horas',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Status: Enviado',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Carga Horária: 50 horas',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Situação: Aguardando envio',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    margin:
+                                        const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Ver mais...',
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(
+                                            color: Colors.blueAccent,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )),
+                      onTap: () {
+                        setState(() {
+                          if (selectedOption == true) {
+                            selectedOption = false;
+                          } else {
+                            selectedOption = true;
+                          }
+                        });
+                      },
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 400,
-                        child: InkWell(
-                          child: Container(
-                              width: double.maxFinite,
-                              height: 140.0,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10.0),
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8.0),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.grey,
-                                    width: 0.5,
-                                    style: BorderStyle.solid),
-                                color: selectedOption == true
-                                    ? Colors.cyan
-                                    : const Color(0xFFDFDFDF),
-                                //const Color(0xFFDFDFDF)
-                                borderRadius:
+                  SizedBox(
+                    width: 400,
+                    child: InkWell(
+                      child: Container(
+                          width: double.maxFinite,
+                          height: 140.0,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10.0),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 12.0, vertical: 8.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.grey,
+                                width: 0.5,
+                                style: BorderStyle.solid),
+                            color: selectedOption == true
+                                ? Colors.cyan
+                                : const Color(0xFFDFDFDF),
+                            //const Color(0xFFDFDFDF)
+                            borderRadius:
                                 const BorderRadius.all(Radius.circular(5)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 4,
-                                    offset:
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 4,
+                                offset:
                                     Offset(3, 4), // changes position of shadow
-                                  ),
-                                ],
                               ),
-                              child: Row(
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    // Image border
+                                    child: SizedBox.fromSize(
+                                      size: Size.fromRadius(55),
+                                      // Image radius
+                                      child: Image.asset(
+                                        "images/certificado.jpg",
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                      padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        // Image border
-                                        child: SizedBox.fromSize(
-                                          size: Size.fromRadius(55),
-                                          // Image radius
-                                          child: Image.asset(
-                                            "images/certificado.jpg",
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      )),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Container(
-                                        margin:
+                                    margin:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Certificado: Curso java 40 horas',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
-                                          ),
-                                        ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Certificado: Curso java 40 horas',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
                                       ),
-                                      Container(
-                                        margin:
+                                    ),
+                                  ),
+                                  Container(
+                                    margin:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Status: Enviado',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
-                                          ),
-                                        ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Status: Enviado',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13),
                                       ),
-                                      Container(
-                                        margin:
+                                    ),
+                                  ),
+                                  Container(
+                                    margin:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Carga Horária: 50 horas',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
-                                          ),
-                                        ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Carga Horária: 50 horas',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13),
                                       ),
-                                      Container(
-                                        margin:
+                                    ),
+                                  ),
+                                  Container(
+                                    margin:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Situação: Aguardando envio',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
-                                          ),
-                                        ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Situação: Aguardando envio',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13),
                                       ),
-                                      Container(
-                                        alignment: Alignment.centerRight,
-                                        margin:
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    margin:
                                         const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Ver mais...',
-                                            textAlign: TextAlign.end,
-                                            style: TextStyle(
-                                                color: Colors.blueAccent,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
-                                          ),
-                                        ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: Text(
+                                        'Ver mais...',
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(
+                                            color: Colors.blueAccent,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13),
                                       ),
-                                    ],
-                                  )
-                                ],
-                              )),
-                          onTap: () {
-                            setState(() {
-                              if (selectedOption == true) {
-                                selectedOption = false;
-                              } else {
-                                selectedOption = true;
-                              }
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 400,
-                        child: InkWell(
-                          child: Container(
-                              width: double.maxFinite,
-                              height: 140.0,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10.0),
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8.0),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.grey,
-                                    width: 0.5,
-                                    style: BorderStyle.solid),
-                                    color: selectedOption == true ? Colors.cyan : const Color(0xFFDFDFDF),
-                                    //const Color(0xFFDFDFDF)
-                                borderRadius:
-                                const BorderRadius.all(Radius.circular(5)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 4,
-                                    offset:
-                                    Offset(3, 4), // changes position of shadow
+                                    ),
                                   ),
                                 ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                      padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        // Image border
-                                        child: SizedBox.fromSize(
-                                          size: Size.fromRadius(55),
-                                          // Image radius
-                                          child: Image.asset(
-                                            "images/certificado.jpg",
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      )),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Container(
-                                        margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Certificado: Curso java 40 horas',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Status: Enviado',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Carga Horária: 50 horas',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Situação: Aguardando envio',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerRight,
-                                        margin:
-                                        const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: Text(
-                                            'Ver mais...',
-                                            textAlign: TextAlign.end,
-                                            style: TextStyle(
-                                                color: Colors.blueAccent,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              )),
-                          onTap: () {
-                            setState(() {
-                              if (selectedOption == true) {
-                                selectedOption = false;
-                              }else {
-                                selectedOption = true;
-                              }
-                            });
-                          },
-                        ),
-                      )
-                    ],
-                  ),
+                              )
+                            ],
+                          )),
+                      onTap: () {
+                        setState(() {
+                          if (selectedOption == true) {
+                            selectedOption = false;
+                          } else {
+                            selectedOption = true;
+                          }
+                        });
+                      },
+                    ),
+                  )
                 ],
-              )),
+              ),
+            ],
+          )),
         ),
         floatingActionButton: FloatingActionButton(
           //Floating action button on Scaffold
