@@ -418,6 +418,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
             Colocar o código que envia o certificado para o banco de dados :)
 
              */
+            print("Wesley disse a verdade");
 
 
           },

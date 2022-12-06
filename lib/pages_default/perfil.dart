@@ -1,12 +1,49 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:catolica_mhc/funcionalidades/crud_certificados/entities/UsuariosCrud.dart';
 import '../functions/appLogic.dart';
-import '../application/main.dart';
-import '../funcionalidades/crud_certificados/entities/student.dart';
+import '../functions/imageWidget.dart';
 import 'certificados.dart';
 import 'login.dart';
 import 'notificacoes.dart';
 import 'dashBoard.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
+
+//teste
+
+
+
+Widget buildCircle({
+  required Widget child,
+  required double all,
+  required Color color,
+}) =>
+    ClipOval(
+      child: Container(
+        padding: EdgeInsets.all(all),
+        color: color,
+        child: child,
+      ),
+    );
+
+Widget buildEditIcon(Color color) => buildCircle(
+      color: Colors.white,
+      all: 2,
+      child: buildCircle(
+        color: color,
+        all: 5,
+        child: Icon(
+          Icons.edit,
+          color: Colors.white,
+          size: 18,
+        ),
+      ),
+    );
 /*
 void main() {
   runApp(const MyApp());
@@ -27,6 +64,7 @@ class MyApp extends StatelessWidget {
   }
 }
 */
+
 class Perfil extends StatefulWidget {
   const Perfil({Key? key}) : super(key: key);
 
@@ -36,26 +74,95 @@ class Perfil extends StatefulWidget {
 
 class _PerfilState extends State<Perfil> {
   int _counter = 0;
+  Icon iconeFloatingButton = Icon(Icons.add);
+  bool _activateFieldPhone = false;
 
-  bool _activateFieldPhone = false,
-      _activateFieldEmail = false,
-      _activateFieldPassword = false;
+  // teste
 
-  Student estudante = Student(
-      degree: 'curso',
-      email: 'email@gmail.com',
-      name: 'nome',
-      phone: 'telefone',
-      password: 'senha');
+  File? image; // Variável de armazenamento local
 
-  Future<Student> getDataStudent() async {
-    estudante.degree = 'curso';
-    estudante.email = 'email@gmail.com';
-    estudante.name = 'nome';
-    estudante.phone = '(47) 99999-9999';
-    estudante.password = 'senha';
+  Future<ImageSource?> showImageSource(BuildContext context) async {
+    if (Platform.isIOS) {
+      return showCupertinoModalPopup<ImageSource>(
+          context: context,
+          builder: (context) => CupertinoActionSheet(
+                actions: [
+                  CupertinoActionSheetAction(
+                    child: Text('Câmera'),
+                    onPressed: () => pickImage(ImageSource.camera),
+                  ),
+                  CupertinoActionSheetAction(
+                    child: Text('Galeria'),
+                    onPressed: () => pickImage(ImageSource.gallery),
+                  ),
+                ],
+              ));
+    } else {
+      return showModalBottomSheet(
+          context: context,
+          builder: (context) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.camera_alt),
+                    title: Text('Câmera'),
+                    onTap: () => pickImage(ImageSource.camera),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.camera_alt),
+                    title: Text('Galeria'),
+                    onTap: () => pickImage(ImageSource.gallery),
+                  )
+                ],
+              ));
+    }
+  }
+
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      //final imageTemporary = File(image.path);
+      final imagePermanent = await saveImagePermanently(image.path);
+      setState(() => this.image = imagePermanent);
+    } on PlatformException catch (e) {
+      print('Falha na obtenção da imagem: $e');
+    }
+  }
+
+  Future<File> saveImagePermanently(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
+
+    print('imagePath: $imagePath');
+    print('imagePath: ${image.path}');
+    print('imagePath: ${directory.path}/$name');
+    return File(imagePath).copy(image.path);
+  }
+
+  UsuariosCrud user = UsuariosCrud(
+      0,
+      // ^^ Matricula
+      '_usu_nome',
+      '_usu_sobrenome',
+      '_usu_email',
+      '_usu_senha',
+      '_usu_curso',
+      '_uso_telefone',
+      '_uso_img_perfil');
+
+  Future<UsuariosCrud> getDataUser() async {
+    user.usu_nome;
+    user.usu_sobrenome;
+    user.usu_email;
+    user.usu_senha;
+    user.usu_curso;
+    user.uso_telefone;
+    user.uso_img_perfil;
     await 100;
-    return estudante;
+    return user;
   }
 
   // initialize the controllers
@@ -65,10 +172,10 @@ class _PerfilState extends State<Perfil> {
 
   void initState() {
     super.initState();
-    getDataStudent();
-    _controllerPhone.text = estudante.phone ?? "";
-    _controllerEmail.text = estudante.email ?? "";
-    _controllerPassword.text = estudante.password ?? "";
+    getDataUser();
+    _controllerPhone.text = user.uso_telefone ?? "";
+    _controllerEmail.text = user.usu_email ?? "";
+    _controllerPassword.text = user.usu_senha ?? "";
   }
 
   void _incrementCounter() {
@@ -79,6 +186,7 @@ class _PerfilState extends State<Perfil> {
 
   @override
   Widget build(BuildContext context) {
+    final color = Color(0xFFC0090C);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
@@ -114,8 +222,7 @@ class _PerfilState extends State<Perfil> {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => Home()));
                       }
-                    }
-                    ),
+                    }),
               )
             ],
           ),
@@ -140,13 +247,31 @@ class _PerfilState extends State<Perfil> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Color(0xFF720507),
-                    radius: 50.0,
-                    backgroundImage: AssetImage('images/user_icon.png'),
-                  ),
+                  image != null
+                      ? ImageWidget(
+                          image: image!,
+                          onClicked: (source) => pickImage(source))
+                      : InkWell(
+                          child: Stack(
+                            children: [
+                              Transform.scale(
+                                scale: 1.2,
+                                child: CircleAvatar(
+                                    backgroundColor: Color(0xFF720507),
+                                    radius: 50.0,
+                                    backgroundImage:
+                                        AssetImage('images/user_icon.png')),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 4,
+                                child: buildEditIcon(color),
+                              )
+                            ],
+                          ),
+                          onTap: () => showImageSource(context)),
                   Text(
-                    estudante.name ?? "",
+                    user.usu_nome ?? "",
                     style: TextStyle(
                       fontSize: 40.0,
                       color: Colors.black,
@@ -155,7 +280,7 @@ class _PerfilState extends State<Perfil> {
                     ),
                   ),
                   Text(
-                    estudante.degree ?? "",
+                    user.usu_curso ?? "",
                     /*esse ??"" significa que se n tiver valor, ele deixa nulo*/
                     style: TextStyle(
                       color: Colors.black,
@@ -178,6 +303,8 @@ class _PerfilState extends State<Perfil> {
                         children: [
                           Flexible(
                             child: TextField(
+                              onChanged: (String value) =>
+                                  iconeFloatingButton = Icon(Icons.edit),
                               controller: _controllerPhone,
                               obscureText: false,
                               enabled: _activateFieldPhone,
@@ -192,8 +319,14 @@ class _PerfilState extends State<Perfil> {
                                 setState(() {
                                   if (_activateFieldPhone == false) {
                                     _activateFieldPhone = true;
+                                  } else if (_activateFieldPhone == true &&
+                                      _controllerPhone.text !=
+                                          user.uso_telefone) {
+                                    _activateFieldPhone = true;
+                                    iconeFloatingButton = Icon(Icons.edit);
                                   } else {
                                     _activateFieldPhone = false;
+                                    iconeFloatingButton = Icon(Icons.add);
                                   }
                                 });
                               },
@@ -214,24 +347,13 @@ class _PerfilState extends State<Perfil> {
                             child: TextField(
                               controller: _controllerEmail,
                               obscureText: false,
-                              enabled: _activateFieldEmail,
+                              enabled: false,
                               decoration: InputDecoration(
                                 border: UnderlineInputBorder(),
                                 label: Text('Email'),
                               ),
                             ),
                           ),
-                          IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (_activateFieldEmail == false) {
-                                    _activateFieldEmail = true;
-                                  } else {
-                                    _activateFieldEmail = false;
-                                  }
-                                });
-                              },
-                              icon: Icon(Icons.edit)),
                         ],
                       ),
                     ),
@@ -251,24 +373,13 @@ class _PerfilState extends State<Perfil> {
                                 child: TextField(
                                   controller: _controllerPassword,
                                   obscureText: true,
-                                  enabled: _activateFieldPassword,
+                                  enabled: false,
                                   decoration: InputDecoration(
                                     border: UnderlineInputBorder(),
                                     label: Text('Senha'),
                                   ),
                                 ),
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (_activateFieldPassword == false) {
-                                        _activateFieldPassword = true;
-                                      } else {
-                                        _activateFieldPassword = false;
-                                      }
-                                    });
-                                  },
-                                  icon: Icon(Icons.edit)),
                             ],
                           ),
                         ),
@@ -280,15 +391,26 @@ class _PerfilState extends State<Perfil> {
             ],
           )),
         ),
-        floatingActionButton: keyboardIsOpened ? null : FloatingActionButton(
-          //Floating action button on Scaffold
-          onPressed: () {
-            //code to execute on button press
-            ShowModal(context);
-          },
-          child: Icon(Icons.add), //icon inside button
-          backgroundColor: Color(0xFFb81317),
-        ),
+        floatingActionButton: keyboardIsOpened
+            ? null
+            : FloatingActionButton(
+                //Floating action button on Scaffold
+                onPressed: () {
+                  //code to execute on button press
+
+                  // Segurança de edição
+                  if (_controllerPhone.text != user.uso_telefone) {
+                    /*
+                     Editar os dados no banco aqui (função criada antes ou sei lá)
+                     */
+                    print('O botão mudou de função');
+                  } else {
+                    ShowModal(context);
+                  }
+                },
+                child: iconeFloatingButton, //icon inside button
+                backgroundColor: Color(0xFFb81317),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         //floating action button position to center
         bottomNavigationBar: Container(
