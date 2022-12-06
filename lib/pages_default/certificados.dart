@@ -26,12 +26,6 @@ class _CertificadosState extends State<Certificados> {
 
   late int selectedOption = imgList.length+1;
 
-  @override
-  void initState() {
-    getCertificadosFirebase(instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
-    super.initState();
-  }
-
   Future getCertificadosFirebase(List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
 
     final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get()); //.limit(1).
@@ -63,6 +57,12 @@ class _CertificadosState extends State<Certificados> {
     setState(() {
       selectedOption = imgList.length+1;
     });
+  }
+
+  @override
+  void initState() {
+    getCertificadosFirebase(instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
+    super.initState();
   }
 
   @override

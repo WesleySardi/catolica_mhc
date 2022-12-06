@@ -31,8 +31,10 @@ class _DashBoardState extends State<DashBoard> {
 
 //---------------------------------------------------------
 
+
   @override
   Widget build(BuildContext context) {
+    getUsuarioRelationFirebase();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
