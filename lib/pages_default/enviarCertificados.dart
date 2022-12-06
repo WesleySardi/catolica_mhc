@@ -1,39 +1,21 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import '../application/main.dart';
-import '../funcionalidades/crud_certificados/entities/CertificadosCrud.dart';
+
+import '../funcionalidades/cruds/entities/CertificadosCrud.dart';
+import 'certificados.dart';
 import 'dashBoard.dart';
 import 'login.dart';
-import 'perfil.dart';
-import 'certificados.dart';
 import 'notificacoes.dart';
-import 'dart:io';
+import 'perfil.dart';
 
 const List<String> list = <String>['Palestra', 'Estágio', 'Outros'];
 // Aqui colocar dinamicamente quais são ou deixar estático, sei lá
 
-/*
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PAC-4 Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: EnviarCertificados(),
-    );
-  }
-}
-*/
 class EnviarCertificados extends StatefulWidget {
   const EnviarCertificados({Key? key}) : super(key: key);
 
@@ -85,6 +67,23 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           )
       );
     }
+  }
+
+  Future enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, image, dropDownValue) async {
+    var collection = FirebaseFirestore.instance.collection('certificados_mhc');
+    collection.doc().set(
+        {
+          'usu_imagem': image,
+          'usu_carga_horaria': _controllerWorkload.text,
+          'usu_id': 1111,
+          'usu_instituicao': _controllerInstitution.text,
+          'usu_motivo': "Teste",
+          'usu_nome_do_curso': _controllerDegreeName.text,
+          'usu_numero_de_matricula': 0000,
+          'usu_status': "Enviado",
+          'usu_tipo_certificado': dropDownValue,
+        }
+    ).then((value) => print('Deu certo! --> '+collection.doc().toString())).catchError((error) => print('deu errado! $error'));
   }
 
   /*
@@ -413,13 +412,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
-            /*
 
-            Colocar o código que envia o certificado para o banco de dados :)
-
-             */
-            print("Wesley disse a verdade");
-
+            enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, image, dropDownValue);
 
           },
           child: Icon(Icons.check), //icon inside button

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:catolica_mhc/funcionalidades/crud_certificados/entities/UsuariosCrud.dart';
+import 'package:catolica_mhc/funcionalidades/cruds/entities/UsuariosCrud.dart';
 import '../functions/appLogic.dart';
 import '../functions/imageWidget.dart';
 import 'certificados.dart';
