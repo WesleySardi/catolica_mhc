@@ -138,7 +138,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
     var collection = FirebaseFirestore.instance.collection('certificados_mhc');
     collection.doc().set(
         {
-          'uso_imagem': image,
+          'usu_imagem': image,
           'usu_carga_horaria': _controllerWorkload.text,
           'usu_id': 1111,
           'usu_instituicao': _controllerInstitution.text,

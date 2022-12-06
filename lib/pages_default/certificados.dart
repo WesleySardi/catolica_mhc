@@ -13,10 +13,8 @@ import 'perfil.dart';
 void main() {
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -168,6 +166,9 @@ class _CertificadosState extends State<Certificados> {
                                     color: Color(0xFF000000),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13.5),
+                                    softWrap: false,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.fade,
                               ),
                             ),
                           ),
@@ -184,6 +185,9 @@ class _CertificadosState extends State<Certificados> {
                                     color: Color(0xFF000000),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13.5),
+                                    softWrap: false,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.fade,
                               ),
                             ),
                           ),
@@ -200,6 +204,9 @@ class _CertificadosState extends State<Certificados> {
                                     color: Color(0xFF000000),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13.5),
+                                    softWrap: false,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.fade,
                               ),
                             ),
                           ),
@@ -216,6 +223,9 @@ class _CertificadosState extends State<Certificados> {
                                     color: Color(0xFF000000),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13.5),
+                                softWrap: false,
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
                               ),
                             ),
                           ),
@@ -233,6 +243,9 @@ class _CertificadosState extends State<Certificados> {
                                     color: Colors.blueAccent,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13.5),
+                                softWrap: false,
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
                               ),
                             ),
                           ),
@@ -241,13 +254,7 @@ class _CertificadosState extends State<Certificados> {
                     ],
                   )),
               onTap: () {
-                /*setState(() {
-            if (selectedOption == true) {
-              selectedOption = false;
-            } else {
-              selectedOption = true;
-            }
-          });*/
+
               },
             ),
           );
@@ -311,174 +318,190 @@ class _CertificadosState extends State<Certificados> {
         body: SingleChildScrollView(
           physics: ScrollPhysics(),
           child: Container(
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-                    child: const Text(
-                      'Certificados',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Color(0xFF000000),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  child: const Text(
+                    'Certificados',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: instituicaoList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return SizedBox(
-                              child: InkWell(
-                                child: Container(
-                                    width: double.maxFinite,
-                                    height: 130.0,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10.0),
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 12.0, vertical: 8.0),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey,
-                                          width: 0.5,
-                                          style: BorderStyle.solid),
-                                      color: selectedOption == index ? Colors.cyan : Colors.white24,
-                                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 2,
-                                          blurRadius: 4,
-                                          offset:
-                                          Offset(3, 4), // changes position of shadow
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                            padding:
-                                            const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(10),
-                                              // Image border
-                                              child: SizedBox.fromSize(
-                                                size: Size.fromRadius(55),
-                                                // Image radius
-                                                child: Image.asset(
-                                                  "images/certificado.jpg",
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            )),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment
-                                              .start,
-                                          children: [
-                                            Container(
-                                              margin:
-                                              const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  'Instituicao: ${instituicaoList[index]}',
-                                                  textAlign: TextAlign.start,
-                                                  style: TextStyle(
-                                                      color: Color(0xFF000000),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13.5),
-                                                ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: instituicaoList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return SizedBox(
+                            child: InkWell(
+                              child: Container(
+                                  width: double.maxFinite,
+                                  height: 130.0,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10.0),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 8.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey,
+                                        width: 0.5,
+                                        style: BorderStyle.solid),
+                                    color: selectedOption == index ? Colors.cyan : Colors.white24,
+                                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 4,
+                                        offset:
+                                        Offset(3, 4), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                          padding:
+                                          const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            // Image border
+                                            child: SizedBox.fromSize(
+                                              size: Size.fromRadius(55),
+                                              // Image radius
+                                              child: Image.asset(
+                                                "images/certificado.jpg",
+                                                fit: BoxFit.cover,
                                               ),
                                             ),
-                                            Container(
-                                              margin:
-                                              const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  'Status: ${statusList[index]}',
-                                                  textAlign: TextAlign.start,
-                                                  style: TextStyle(
-                                                      color: Color(0xFF000000),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13.5),
+                                          )),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          Container(
+                                            margin:
+                                            const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                            child: Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                              child: Text(
+                                                'Instituicao: ${instituicaoList[index]}',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    color: Color(0xFF000000),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13.5,
                                                 ),
+                                                softWrap: false,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.fade,
                                               ),
                                             ),
-                                            Container(
-                                              margin:
-                                              const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  'Carga Horária: ${carga_horariaList.toString()[index]}',
-                                                  textAlign: TextAlign.start,
-                                                  style: TextStyle(
-                                                      color: Color(0xFF000000),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13.5),
-                                                ),
+                                          ),
+                                          Container(
+                                            margin:
+                                            const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                            child: Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                              child: Text(
+                                                'Status: ${statusList[index]}',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    color: Color(0xFF000000),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13.5),
+                                                softWrap: false,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.fade,
                                               ),
                                             ),
-                                            Container(
-                                              margin:
-                                              const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  'Tipo de certificacao: ${tipo_certificacaoList[index]}',
-                                                  textAlign: TextAlign.start,
-                                                  style: TextStyle(
-                                                      color: Color(0xFF000000),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13.5),
-                                                ),
+                                          ),
+                                          Container(
+                                            margin:
+                                            const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                            child: Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                              child: Text(
+                                                'Carga Horária: ${carga_horariaList.toString()[index]}',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    color: Color(0xFF000000),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13.5),
+                                                softWrap: false,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.fade,
                                               ),
                                             ),
-                                            Container(
-                                              alignment: Alignment.centerRight,
-                                              margin:
-                                              const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                              child: const Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  'Ver mais...',
-                                                  textAlign: TextAlign.end,
-                                                  style: TextStyle(
-                                                      color: Colors.blueAccent,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13.5),
-                                                ),
+                                          ),
+                                          Container(
+                                            margin:
+                                            const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                            child: Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                              child: Text(
+                                                'Tipo de certificacao: ${tipo_certificacaoList[index]}',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    color: Color(0xFF000000),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13.5),
+                                                softWrap: false,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.fade,
                                               ),
                                             ),
-                                          ],
-                                        )
-                                      ],
-                                    )),
-                                onTap: () {
-                                  setState(() {
+                                          ),
+                                          Container(
+                                            alignment: Alignment.centerRight,
+                                            margin:
+                                            const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                            child: const Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                              child: Text(
+                                                'Ver mais...',
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(
+                                                    color: Colors.blueAccent,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13.5),
+                                                softWrap: false,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.fade,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  )),
+                              onTap: () {
+                                setState(() {
                                   selectedOption = index;
-                                  });
-                                },
-                              ),
-                            );
-                          }
-                      )
-                    ],
-                  ),
-                ],
-              ), // --------------------------------------------------------------------------------------------------
+                                });
+                              },
+                            ),
+                          );
+                        }
+                    )
+                  ],
+                ),
+              ],
+            ), // --------------------------------------------------------------------------------------------------
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -549,17 +572,18 @@ class _CertificadosState extends State<Certificados> {
                             /*var collection = FirebaseFirestore.instance.collection('certificados_mhc');
                             collection.doc().set(
                                 {
-                                  'uso_imagem': "teste",
+                                  'uso_imagem': "testetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetesteteste",
                                   'usu_carga_horaria': 42,
                                   'usu_id': 3,
-                                  'usu_instituicao': "PUC-SC",
-                                  'usu_motivo': "Teste",
-                                  'usu_nome_do_curso': "Engenharia de Software",
+                                  'usu_instituicao': "Centro Universitário Católica de Santa Catarina, vulgo Pontíficia Universidade Católica",
+                                  'usu_motivo': "Porque o cidadão enviou o certificado repetidas vezes, ocasionando na invalidação do mesmo.",
+                                  'usu_nome_do_curso': "Curso de Analise em porta aviões subaquáticos que são movidos a óleo",
                                   'usu_numero_de_matricula': 1234,
                                   'usu_status': "Enviado",
                                   'usu_tipo_certificado': "teste",
                                 }
-                            );*/
+                            );
+                            print("teste");*/
                           }
                           );
                           Navigator.push(
