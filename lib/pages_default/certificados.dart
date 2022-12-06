@@ -9,25 +9,6 @@ import 'login.dart';
 import 'notificacoes.dart';
 import 'perfil.dart';
 
-/*
-void main() {
-  runApp(const MyApp());
-}
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PAC-4 Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Certificados()
-    );
-  }
-}
-*/
-
 class Certificados extends StatefulWidget {
   const Certificados({Key? key}) : super(key: key);
 
@@ -395,7 +376,7 @@ class _CertificadosState extends State<Certificados> {
                                               padding: EdgeInsets.fromLTRB(
                                                   0, 0, 0, 0),
                                               child: Text(
-                                                'Instituicao: ${instituicaoList[index]}',
+                                                '${instituicaoList[index]}',
                                                 textAlign: TextAlign.start,
                                                 style: TextStyle(
                                                     color: Color(0xFF000000),
@@ -403,8 +384,8 @@ class _CertificadosState extends State<Certificados> {
                                                     fontSize: 13.5,
                                                 ),
                                                 softWrap: false,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.fade,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                           ),
