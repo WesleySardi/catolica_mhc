@@ -10,13 +10,6 @@ import 'login.dart';
 import 'notificacoes.dart';
 import 'dashBoard.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
-
-
-//teste
-
-
 
 Widget buildCircle({
   required Widget child,
@@ -44,26 +37,6 @@ Widget buildEditIcon(Color color) => buildCircle(
         ),
       ),
     );
-/*
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PAC-4 Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Perfil(),
-    );
-  }
-}
-*/
 
 class Perfil extends StatefulWidget {
   const Perfil({Key? key}) : super(key: key);
@@ -73,11 +46,9 @@ class Perfil extends StatefulWidget {
 }
 
 class _PerfilState extends State<Perfil> {
-  int _counter = 0;
+
   Icon iconeFloatingButton = Icon(Icons.add);
   bool _activateFieldPhone = false;
-
-  // teste
 
   File? image; // Variável de armazenamento local
 
@@ -123,23 +94,11 @@ class _PerfilState extends State<Perfil> {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
-      //final imageTemporary = File(image.path);
-      final imagePermanent = await saveImagePermanently(image.path);
-      setState(() => this.image = imagePermanent);
+      final imageTemporary = File(image.path);
+      setState(() => this.image = imageTemporary);
     } on PlatformException catch (e) {
       print('Falha na obtenção da imagem: $e');
     }
-  }
-
-  Future<File> saveImagePermanently(String imagePath) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final name = basename(imagePath);
-    final image = File('${directory.path}/$name');
-
-    print('imagePath: $imagePath');
-    print('imagePath: ${image.path}');
-    print('imagePath: ${directory.path}/$name');
-    return File(imagePath).copy(image.path);
   }
 
   UsuariosCrud user = UsuariosCrud(
@@ -176,12 +135,6 @@ class _PerfilState extends State<Perfil> {
     _controllerPhone.text = user.uso_telefone ?? "";
     _controllerEmail.text = user.usu_email ?? "";
     _controllerPassword.text = user.usu_senha ?? "";
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
   }
 
   @override
@@ -400,9 +353,13 @@ class _PerfilState extends State<Perfil> {
 
                   // Segurança de edição
                   if (_controllerPhone.text != user.uso_telefone) {
+
+
                     /*
                      Editar os dados no banco aqui (função criada antes ou sei lá)
                      */
+
+
                     print('O botão mudou de função');
                   } else {
                     ShowModal(context);
