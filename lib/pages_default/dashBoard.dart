@@ -9,26 +9,6 @@ import 'certificados.dart';
 import 'doughnutChart.dart';
 import 'notificacoes.dart';
 
-/*
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        backgroundColor: Colors.white,
-        //visualDensity: VisualDensity.adaptivePlatformDensity,
-        //brightness: Brightness.dark    (Modo escuro, bugado)
-      ),
-      home: DashBoard(),
-    );
-  }
-}
-*/
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
 
@@ -42,19 +22,10 @@ class _DashBoardState extends State<DashBoard> {
 
   String nome = 'Uéixley'; // Trocar depois pra pegar o nome do banco
 
-//---
-/*
-  int _counter = 0;
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-*/
-//---
   @override
   void initState() {
-    _tooltipBehavior = TooltipBehavior(enable: true);
+    _tooltipBehavior =
+        TooltipBehavior(enable: true, textStyle: const TextStyle(fontSize: 16));
     super.initState();
   }
 
@@ -145,6 +116,7 @@ class _DashBoardState extends State<DashBoard> {
                     isVisible: true,
                     overflowMode: LegendItemOverflowMode.wrap,
                     position: LegendPosition.bottom,
+                    textStyle: TextStyle(fontSize: 14),
                   ),
                   // Legenda abaixo do gráfico (default: direita)
                   tooltipBehavior: _tooltipBehavior,
@@ -155,9 +127,13 @@ class _DashBoardState extends State<DashBoard> {
                       pointColorMapper: (ChartData data, _) => data.color,
                       xValueMapper: (ChartData data, _) => data.x,
                       yValueMapper: (ChartData data, _) => data.y,
-                      radius: '112%',
+                      radius: '100%',
 
-                      dataLabelSettings: DataLabelSettings(isVisible: true),
+                      dataLabelSettings: DataLabelSettings(
+                        isVisible: false,
+                        offset: Offset.fromDirection(1),
+                        textStyle: TextStyle(fontSize: 16),
+                      ),
                       enableTooltip: true,
                       //Liberando modificações Tooltip
 
@@ -170,9 +146,9 @@ class _DashBoardState extends State<DashBoard> {
                 // Desenvolvimento de progress bar e resumo
               ),
               Column(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.bottomCenter,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(top: 23),
                     child: LinearPercentIndicator(
                       width: MediaQuery.of(context).size.width * 0.6,
                       animation: true,

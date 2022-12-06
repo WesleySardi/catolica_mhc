@@ -712,10 +712,10 @@ class _NotificacoesState extends State<Notificacoes> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          /*Navigator.push(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => DashBoard())
-                            );*/
+                            );
                         },
                       ),
                       IconButton(
