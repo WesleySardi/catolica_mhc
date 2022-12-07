@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -74,6 +76,7 @@ void ShowModal(BuildContext context) {
 }
 
 Color colorTextStyle = Color.fromRGBO(17, 17, 17, 1.0);
+Color colorTextStyle_titles = Color.fromRGBO(255, 0, 0, 1.0);
 
 Future<void> ShowDialogResumo(BuildContext context, List<String> instituicaoList, List<String> tipo_certificacaoList, List<double> carga_horariaList, List<String> statusList, List<String> imgList, int index) {
   return showDialog<void>(
@@ -125,39 +128,95 @@ Future<void> ShowDialogResumo(BuildContext context, List<String> instituicaoList
                         children: <Widget> [
                           Container(
                             alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            child: Text(
-                              "Instituição: ${instituicaoList[index]}",
-                              style: TextStyle(color: colorTextStyle),
-                              textAlign: TextAlign.start,
-                            ),
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  "Instituição",
+                                  style: TextStyle(color: colorTextStyle_titles, fontWeight: FontWeight.bold, fontSize: 17),
+                                  textAlign: TextAlign.start,
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 3, 0, 3)
+                                ),
+                                Text(
+                                  instituicaoList[index],
+                                  style: TextStyle(color: colorTextStyle),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            )
                           ),
                           Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            child: Text(
-                              "Status: ${statusList[index]}",
-                              style: TextStyle(color: colorTextStyle),
-                              textAlign: TextAlign.start,
-                            ),
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Carga horária",
+                                    style: TextStyle(color: colorTextStyle_titles, fontWeight: FontWeight.bold, fontSize: 17),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 3, 0, 3)
+                                  ),
+                                  Text(
+                                    carga_horariaList[index].toString(),
+                                    style: TextStyle(color: colorTextStyle),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              )
                           ),
                           Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            child: Text(
-                              "Carga horária: ${carga_horariaList[index]}",
-                              style: TextStyle(color: colorTextStyle),
-                              textAlign: TextAlign.start,
-                            ),
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Tipo de certificado",
+                                    style: TextStyle(color: colorTextStyle_titles, fontWeight: FontWeight.bold, fontSize: 17),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 3, 0, 3)
+                                  ),
+                                  Text(
+                                    tipo_certificacaoList[index],
+                                    style: TextStyle(color: colorTextStyle),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              )
                           ),
                           Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            child: Text(
-                              "Tipo de certificado: ${tipo_certificacaoList[index]}",
-                              style: TextStyle(color: colorTextStyle),
-                              textAlign: TextAlign.start,
-                            ),
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Status",
+                                    style: TextStyle(color: colorTextStyle_titles, fontWeight: FontWeight.bold, fontSize: 17),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 3, 0, 3)
+                                  ),
+                                  Text(
+                                    statusList[index],
+                                    style: TextStyle(color: colorTextStyle),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              )
                           ),
                         ],
                       ),
