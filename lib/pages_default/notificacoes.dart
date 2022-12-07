@@ -107,7 +107,7 @@ class _NotificacoesState extends State<Notificacoes> {
                       itemCount: numero_de_matricula_usuList.length,
                       itemBuilder: (BuildContext context, int index) {
                         return SizedBox(
-                          height: 100,
+                          height: 110,
                           width: 400,
                           child: Container(
                               width: double.maxFinite,
@@ -141,10 +141,21 @@ class _NotificacoesState extends State<Notificacoes> {
                                   Container(
                                       width: 300,
                                       child: SingleChildScrollView(
-                                          child: Text(
-                                            'Certificado "'+tituloList[index]+'"\n'+situacaoList[index],
-                                            style: TextStyle(color: colorTextStyle, fontSize: 15),
-                                            textAlign: TextAlign.start,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Certificado "'+tituloList[index]+'"',
+                                                style: TextStyle(color: colorTextStyle, fontSize: 15),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Padding(padding: EdgeInsets.fromLTRB(0, 2, 0, 2)),
+                                              Text(
+                                                situacaoList[index],
+                                                style: TextStyle(color: Colors.red, fontSize: 15),
+                                                textAlign: TextAlign.start,
+                                              )
+                                            ],
                                           ),
                                         )
                                   )
