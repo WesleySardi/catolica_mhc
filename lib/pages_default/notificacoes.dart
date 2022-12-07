@@ -16,50 +16,40 @@ class Notificacoes extends StatefulWidget {
 }
 
 class _NotificacoesState extends State<Notificacoes> {
-  late List<String> instituicaoList = <String>[];
-  late List<String> imgList = <String>[];
-  late List<double> carga_horariaList = <double>[];
-  late List<String> tipo_certificacaoList = <String>[];
-  late List<String> statusList = <String>[];
+  late List<String> tituloList = <String>[];
+  late List<String> situacaoList = <String>[];
+  late List<int> numero_de_matricula_usuList = <int>[];
 
-  late int selectedOption = imgList.length+1;
+  late int selectedOption = numero_de_matricula_usuList.length+1;
 
   @override
   void initState() {
-    getCertificadosFirebase(instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
+    getCertificadosFirebase(tituloList, situacaoList, numero_de_matricula_usuList);
     super.initState();
   }
 
-  Future getCertificadosFirebase(List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
+  Future getCertificadosFirebase(List<String> tituloList, List<String> situacaoList,  List<int> numero_de_matricula_usuList, ) async {
 
-    final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get()); //.limit(1).
+    final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get());
 
     final List<DocumentSnapshot> documents = result.docs;
 
-    late String instituicao;
-    late String img;
-    late double carga_horaria;
-    late String tipo_certificacao;
-    late String status;
+    late String titulo;
+    late int numero_de_matricula_usu;
+    late String situacao;
 
     documents.forEach((element) {
-      instituicao = element.get("usu_instituicao").toString();
-      instituicaoList.add(instituicao);
+      titulo = element.get("cert_titulo").toString();
+      tituloList.add(titulo);
 
-      img = element.get("uso_imagem").toString();
-      imgList.add(img);
+      numero_de_matricula_usu = element.get("cert_numero_de_matricula_usu");
+      numero_de_matricula_usuList.add(numero_de_matricula_usu);
 
-      carga_horaria = double.parse(element.get("usu_carga_horaria").toString());
-      carga_horariaList.add(carga_horaria);
-
-      status = element.get("usu_status").toString();
-      statusList.add(status);
-
-      tipo_certificacao = element.get("usu_tipo_certificado").toString();
-      tipo_certificacaoList.add(tipo_certificacao);
+      situacao = element.get("cert_situacao_do_certificado").toString();
+      situacaoList.add(situacao);
     });
     setState(() {
-      selectedOption = imgList.length+1;
+      selectedOption = numero_de_matricula_usuList.length+1;
     });
   }
 
@@ -114,7 +104,7 @@ class _NotificacoesState extends State<Notificacoes> {
                       physics: NeverScrollableScrollPhysics(),
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: instituicaoList.length,
+                      itemCount: numero_de_matricula_usuList.length,
                       itemBuilder: (BuildContext context, int index) {
                         return SizedBox(
                           width: 400,
@@ -151,7 +141,7 @@ class _NotificacoesState extends State<Notificacoes> {
                                   ),
                                   Container(
                                     child: Text(
-                                        'Certificado "${instituicaoList[index]}" recusado.',
+                                        'Certificado "${tituloList[index]}" ${situacaoList[index]}.',
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
                                             color: Color(0xFF000000),
