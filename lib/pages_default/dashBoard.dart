@@ -13,22 +13,7 @@ import 'notificacoes.dart';
 
 class DashBoard extends StatefulWidget {
   final int matricula;
-
-  Future getUsuarioMatricula() async {
-    final QuerySnapshot result = await Future.value(
-        FirebaseFirestore.instance.collection("usuarios_mhc").get()); //.limit(1).
-    final List<DocumentSnapshot> documents = result.docs;
-
-    documents.forEach((element) {
-      if(matricula == element.get('cert_numero_de_matricula_usu')) {
-
-
-
-      }
-    });
-
-  }
-
+  
   const DashBoard({Key? key, required this.matricula}) : super(key: key);
 
   @override
@@ -39,12 +24,30 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   late TooltipBehavior _tooltipBehavior;
 
-  String nome = 'Uéixley'; // Trocar depois pra pegar o nome do banco
+  // String nome = 'Uéixley'; // Trocar depois pra pegar o nome do banco
+  late String nome = '', sobrenome = '';
+
+  late List<int> matriculaList = <int>[];
+  late List<ChartData> chartData = <ChartData>[];
+  late List<String> instituicaoList = <String>[];
+  late List<String> imgList = <String>[];
+  late List<double> carga_horariaList = <double>[];
+  late List<String> tipo_certificacaoList = <String>[];
+  late List<String> statusList = <String>[];
+
+  List<Map<String, String>> listaDeMap = <Map<String, String>>[];
+  List<Map<String, String>> listaDeMapAtt = <Map<String, String>>[];
+
+  double somaDeCargaHorariaTeste = 0.0;
+  double somaDeCargaHorariaEstagio = 0.0;
+  double somaDeCargaHorariaPalestra = 0.0;
+  double somaDeCargaHorariaOutros = 0.0;
 
   @override
   void initState() {
     getCertificadosFirebase(matriculaList, instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
-    getUsuarioRelationFirebase(matriculaList);
+    getDefineDadosGrafico();
+    getUsuarioMatricula(matriculaList);
     _tooltipBehavior =
         TooltipBehavior(enable: true, textStyle: const TextStyle(fontSize: 16));
     super.initState();
@@ -52,96 +55,8 @@ class _DashBoardState extends State<DashBoard> {
 
 //---------------------------------------------------------
 
-  void ShowModal(BuildContext context) {
-    //code to execute on button press
-    //botao aparece as coisas
-    showModalBottomSheet<void>(
-      context: context,
-      elevation: 10,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
-      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-      builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          child: Center(
-            child: FractionallySizedBox(
-              heightFactor: 0.8,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          elevation: 2,
-                          shape: StadiumBorder(),
-                          minimumSize: Size(300, 43),
-                          maximumSize: Size(300, 43),
-                          backgroundColor: Colors.red[900]),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.add_chart_sharp),
-                          Text("Inserir certificado     ",
-                              style: TextStyle(fontSize: 20)),
-                        ],
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EnviarCertificados(matricula: widget.matricula)));
-                      },
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 2,
-                        shape: StadiumBorder(),
-                        minimumSize: Size(300, 43),
-                        maximumSize: Size(300, 43),
-                        backgroundColor: Colors.red[900]),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(Icons.camera_enhance),
-                        Text(
-                          "Escanear certificado",
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ],
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  late List<ChartData> chartData = <ChartData>[];
-
-
-  late List<int> matriculaList = <int>[];
-  late List<String> instituicaoList = <String>[];
-  late List<String> imgList = <String>[];
-  late List<double> carga_horariaList = <double>[];
-  late List<String> tipo_certificacaoList = <String>[];
-  late List<String> statusList = <String>[];
-
-  double somaDeCargaHorariaTeste = 0.0;
-  double somaDeCargaHorariaEstagio = 0.0;
-
-  double somaDeCargaHorariaPalestra = 0.0;
-  double somaDeCargaHorariaOutros = 0.0;
-
-  List<Map<String, String>> listaDeMap = <Map<String, String>>[];
-  List<Map<String, String>> listaDeMapAtt = <Map<String, String>>[];
-
-  Future getUsuarioRelationFirebase(List<int> matriculaList) async {
+  // Pega os dados pro gráfico e organiza
+  Future getDefineDadosGrafico() async {
     final QuerySnapshot result = await Future.value(
         FirebaseFirestore.instance.collection("certificados_mhc")
             .get()); //.limit(1).
@@ -164,14 +79,11 @@ class _DashBoardState extends State<DashBoard> {
     if(tipo_certificadoUsuario.length == carga_horariaUsuario.length){
       for(int i = 0; i < tipo_certificadoUsuario.length; i++){
         Map<String, String> mapTemp = {};
-        mapTemp['tipo_certificado'] = tipo_certificadoUsuario[i];
-        //print("${i} mapTemp certificado: ${mapTemp['tipo_certificado']}");
 
+        mapTemp['tipo_certificado'] = tipo_certificadoUsuario[i];
         mapTemp['carga_horaria'] = carga_horariaUsuario[i].toString();
-        //print("${i} mapTemp certificado: ${mapTemp['carga_horaria']}");
 
         listaDeMap.add(mapTemp);
-        //print("$i listdeMap: $listaDeMap");
       }
 
       for(int i = 0; i < listaDeMap.length; i++) {
@@ -182,10 +94,7 @@ class _DashBoardState extends State<DashBoard> {
         }
         else if(listaDeMap[i]['tipo_certificado'] == 'Palestra'){
           somaDeCargaHorariaPalestra += double.parse(listaDeMap[i]['carga_horaria']!);
-        } /*else if(listaDeMap[i]['tipo_certificado'] == 'teste'){
-          somaDeCargaHorariaTeste += double.parse(listaDeMap[i]['carga_horaria']!);
-          print(somaDeCargaHorariaTeste);
-        }*/
+        }
       }
     } else {
       throw Exception('Não passou na validação');
@@ -198,19 +107,15 @@ class _DashBoardState extends State<DashBoard> {
     ];
 
   }
-// fim teste
-
-  // Implementando dados dinâmicos no gráfico
-
-  Future getCertificadosFirebase(List<int> matriculaList, List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
+  
+  // Pega os dados do certificado
+  Future getCertificadosFirebase(List<int> matriculaList,List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
 
     final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get()); //.limit(1).
 
     final List<DocumentSnapshot> documents = result.docs;
 
-    // Parte do teste pegar matricula
-    late int matricula;
-    //
+    late int matriculaCertificado;
 
     late String instituicao;
     late String img;
@@ -219,8 +124,8 @@ class _DashBoardState extends State<DashBoard> {
     late String status;
 
     documents.forEach((element) {
-      matricula = element.get("cert_numero_de_matricula_usu");
-      matriculaList.add(matricula);
+      matriculaCertificado = element.get("cert_numero_de_matricula_usu");
+      matriculaList.add(matriculaCertificado);
 
       instituicao = element.get("cert_instituicao").toString();
       instituicaoList.add(instituicao);
@@ -238,11 +143,35 @@ class _DashBoardState extends State<DashBoard> {
       tipo_certificacaoList.add(tipo_certificacao);
     });
   }
+  
+  // Define as informações da dashboard
+  Future getUsuarioMatricula(List<int> matriculaList) async {
+    final QuerySnapshot result = await Future.value(
+        FirebaseFirestore.instance.collection("usuarios_mhc").get()); //.limit(1).
+    final List<DocumentSnapshot> documents = result.docs;
+
+    int tempMatricula = 0;
+
+    for(int i = 0; i < matriculaList.length; i++) {
+      if(widget.matricula == matriculaList[i]) {
+        tempMatricula = matriculaList[i];
+      }
+    }
+
+    documents.forEach((element) {
+      if(widget.matricula == tempMatricula) {
+        nome = element.get('usu_nome');
+        sobrenome = element.get('usu_sobrenome');
+      }
+    });
+
+    print(nome);
+    print(sobrenome);
+  }
 
 
-// -- Fim obtenção de dados
 
-
+  // Construção da dash
   @override
   Widget build(BuildContext context) {
 
@@ -292,7 +221,7 @@ class _DashBoardState extends State<DashBoard> {
                   alignment: FractionalOffset.topLeft,
                   margin: EdgeInsets.only(left: 40, top: 20, bottom: 15),
                   child: Text(
-                    "Olá, \n${nome}!",
+                    "Olá, \n${nome + sobrenome}!",
                     style: TextStyle(
                       fontSize: 30,
                     ),
@@ -509,6 +438,78 @@ class _DashBoardState extends State<DashBoard> {
           ),
         ],
       ), */
+    );
+  }
+
+
+  // Modal Enviar certificado
+  void ShowModal(BuildContext context) {
+    //code to execute on button press
+    //botao aparece as coisas
+    showModalBottomSheet<void>(
+      context: context,
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
+      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          child: Center(
+            child: FractionallySizedBox(
+              heightFactor: 0.8,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          shape: StadiumBorder(),
+                          minimumSize: Size(300, 43),
+                          maximumSize: Size(300, 43),
+                          backgroundColor: Colors.red[900]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.add_chart_sharp),
+                          Text("Inserir certificado     ",
+                              style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EnviarCertificados(matricula: widget.matricula)));
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        shape: StadiumBorder(),
+                        minimumSize: Size(300, 43),
+                        maximumSize: Size(300, 43),
+                        backgroundColor: Colors.red[900]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(Icons.camera_enhance),
+                        Text(
+                          "Escanear certificado",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

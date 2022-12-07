@@ -85,7 +85,7 @@ class _HomeState extends State<Home> {
                                     borderRadius: BorderRadius.circular(30),
                                     borderSide:
                                     BorderSide(color: Colors.white, width: 1.5)),
-                                labelText: 'Digite a sua matrícula...',
+                                labelText: 'Digite o seu email...',
                                 hoverColor: Colors.white,
                               ),
                             ),
