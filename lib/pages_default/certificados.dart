@@ -18,46 +18,56 @@ class Certificados extends StatefulWidget {
 
 class _CertificadosState extends State<Certificados> {
 
+  late List<String> tituloList = <String>[];
   late List<String> instituicaoList = <String>[];
   late List<String> imgList = <String>[];
   late List<double> carga_horariaList = <double>[];
   late List<String> tipo_certificacaoList = <String>[];
   late List<String> statusList = <String>[];
+  late List<String> coord_obsList = <String>[];
 
   late int selectedOption = imgList.length+1;
 
   @override
   void initState() {
-    getCertificadosFirebase(instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
+    getCertificadosFirebase(tituloList, instituicaoList, coord_obsList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
     super.initState();
   }
 
-  Future getCertificadosFirebase(List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
+  Future getCertificadosFirebase(List<String> tituloList, List<String> instituicaoList, List<String> coord_obsList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
 
     final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get());
 
     final List<DocumentSnapshot> documents = result.docs;
 
-    late String instituicao;
+    late String titulo;
     late String img;
     late double carga_horaria;
     late String tipo_certificacao;
     late String status;
+    late String instituicao;
+    late String coord_obs;
 
     documents.forEach((element) {
-      instituicao = element.get("usu_instituicao").toString();
-      instituicaoList.add(instituicao);
+      titulo = element.get("cert_titulo").toString();
+      tituloList.add(titulo);
 
-      img = element.get("uso_imagem").toString();
+      img = element.get("cert_img").toString();
       imgList.add(img);
 
-      carga_horaria = double.parse(element.get("usu_carga_horaria").toString());
+      instituicao = element.get("cert_instituicao").toString();
+      instituicaoList.add(instituicao);
+
+      coord_obs = element.get("cert_coord_obs").toString();
+      coord_obsList.add(coord_obs);
+
+      carga_horaria = double.parse(element.get("cert_carga_horaria").toString());
       carga_horariaList.add(carga_horaria);
 
-      status = element.get("usu_status").toString();
+      status = element.get("cert_status").toString();
       statusList.add(status);
 
-      tipo_certificacao = element.get("usu_tipo_certificado").toString();
+      tipo_certificacao = element.get("cert_tipo_certificado").toString();
       tipo_certificacaoList.add(tipo_certificacao);
     });
     setState(() {
@@ -257,7 +267,7 @@ class _CertificadosState extends State<Certificados> {
                               onTap: () {
                                 setState(() {
                                   selectedOption = index;
-                                  ShowDialogResumo(context, instituicaoList, tipo_certificacaoList, carga_horariaList, statusList, imgList, index);
+                                  ShowDialogResumo(context, tituloList, instituicaoList, coord_obsList, imgList, carga_horariaList, tipo_certificacaoList, statusList, index);
                                 });//${instituicaoList[index]}
                               },
                             ),
@@ -275,6 +285,20 @@ class _CertificadosState extends State<Certificados> {
           onPressed: () {
             //code to execute on button press
             ShowModal(context);
+            // var collection = FirebaseFirestore.instance.collection('certificados_mhc');
+            // collection.doc().set(
+            //     {
+            //        'cert_img': "",
+            //        'cert_carga_horaria': 40,
+            //        'cert_id': 1,
+            //        'cert_instituicao': "Centro Universitário Católica de Santa Catarina, vulgo Pontíficia Universidade Católica",
+            //        'cert_coord_obs': "Porque o cidadão enviou o certificado repetidas vezes, ocasionando na invalidação do mesmo.",
+            //        'cert_titulo': "Curso de Java da Udemy",
+            //        'cert_numero_de_matricula_usu': 1234567,
+            //        'cert_status': "Enviado",
+            //        'cert_tipo_certificado': "Palestra",
+            //     }
+            // );
           },
           child: Icon(selectedOption == true ? Icons.edit : Icons.add),
           //icon inside button

@@ -78,7 +78,18 @@ void ShowModal(BuildContext context) {
 Color colorTextStyle = Color.fromRGBO(17, 17, 17, 1.0);
 Color colorTextStyle_titles = Color.fromRGBO(255, 0, 0, 1.0);
 
-Future<void> ShowDialogResumo(BuildContext context, List<String> instituicaoList, List<String> tipo_certificacaoList, List<double> carga_horariaList, List<String> statusList, List<String> imgList, int index) {
+Future<void> ShowDialogResumo(BuildContext context, List<String> tituloList, List<String> instituicaoList, List<String> coord_obsList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList, int index) {
+  String tempObsCoordenador = coord_obsList[index];
+  String tempStatus = statusList[index];
+
+  if(coord_obsList[index] == "") {
+    tempObsCoordenador = "Sem observações por enquanto";
+  }
+
+  if(statusList[index] == "") {
+    tempStatus = "Status indefinido";
+  }
+
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -127,6 +138,29 @@ Future<void> ShowDialogResumo(BuildContext context, List<String> instituicaoList
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget> [
                           Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Titulo",
+                                    style: TextStyle(color: colorTextStyle_titles, fontWeight: FontWeight.bold, fontSize: 17),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 3, 0, 3)
+                                  ),
+                                  Text(
+                                    tituloList[index],
+                                    style: TextStyle(color: colorTextStyle),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              )
+                          ),
+                          Container(
                             alignment: Alignment.centerLeft,
                             padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                             child: Column(
@@ -148,6 +182,30 @@ Future<void> ShowDialogResumo(BuildContext context, List<String> instituicaoList
                                 ),
                               ],
                             )
+                          ),
+                          Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Observação do Coordenador",
+                                    style: TextStyle(color: colorTextStyle_titles, fontWeight: FontWeight.bold, fontSize: 17),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 3, 0, 3)
+                                  ),
+                                  Text(
+                                    //coord_obsList[index],
+                                    tempObsCoordenador,
+                                    style: TextStyle(color: colorTextStyle),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              )
                           ),
                           Container(
                               alignment: Alignment.centerLeft,
@@ -211,7 +269,8 @@ Future<void> ShowDialogResumo(BuildContext context, List<String> instituicaoList
                                       padding: EdgeInsets.fromLTRB(0, 3, 0, 3)
                                   ),
                                   Text(
-                                    statusList[index],
+                                    //statusList[index],
+                                    tempStatus,
                                     style: TextStyle(color: colorTextStyle),
                                     textAlign: TextAlign.start,
                                   ),
