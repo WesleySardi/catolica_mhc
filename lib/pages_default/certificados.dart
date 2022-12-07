@@ -34,7 +34,7 @@ class _CertificadosState extends State<Certificados> {
 
   Future getCertificadosFirebase(List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
 
-    final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get()); //.limit(1).
+    final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get());
 
     final List<DocumentSnapshot> documents = result.docs;
 

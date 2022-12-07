@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../functions/appLogic.dart';
 import '../application/main.dart';
@@ -7,25 +8,6 @@ import 'perfil.dart';
 
 import 'certificados.dart';
 
-/*void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PAC-4 Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Notificacoes(),
-    );
-  }
-}
-*/
 class Notificacoes extends StatefulWidget {
   const Notificacoes({Key? key}) : super(key: key);
 
@@ -34,11 +16,50 @@ class Notificacoes extends StatefulWidget {
 }
 
 class _NotificacoesState extends State<Notificacoes> {
-  int _counter = 0;
+  late List<String> instituicaoList = <String>[];
+  late List<String> imgList = <String>[];
+  late List<double> carga_horariaList = <double>[];
+  late List<String> tipo_certificacaoList = <String>[];
+  late List<String> statusList = <String>[];
 
-  void _incrementCounter() {
+  late int selectedOption = imgList.length+1;
+
+  @override
+  void initState() {
+    getCertificadosFirebase(instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
+    super.initState();
+  }
+
+  Future getCertificadosFirebase(List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
+
+    final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get()); //.limit(1).
+
+    final List<DocumentSnapshot> documents = result.docs;
+
+    late String instituicao;
+    late String img;
+    late double carga_horaria;
+    late String tipo_certificacao;
+    late String status;
+
+    documents.forEach((element) {
+      instituicao = element.get("usu_instituicao").toString();
+      instituicaoList.add(instituicao);
+
+      img = element.get("uso_imagem").toString();
+      imgList.add(img);
+
+      carga_horaria = double.parse(element.get("usu_carga_horaria").toString());
+      carga_horariaList.add(carga_horaria);
+
+      status = element.get("usu_status").toString();
+      statusList.add(status);
+
+      tipo_certificacao = element.get("usu_tipo_certificado").toString();
+      tipo_certificacaoList.add(tipo_certificacao);
+    });
     setState(() {
-      _counter++;
+      selectedOption = imgList.length+1;
     });
   }
 
@@ -89,502 +110,63 @@ class _NotificacoesState extends State<Notificacoes> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 400,
-                    child: Container(
-                        width: double.maxFinite,
-                        height: 65.0,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                          color: const Color(0xFFDFDFDF),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 4,
-                              offset: Offset(3, 4), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Image.asset("images/warning.png",
-                                  width: 15, height: 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Certificado "Curso JAVA 40 horas" recusado.',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
+                  ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: instituicaoList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          width: 400,
+                          child: Container(
+                              width: double.maxFinite,
+                              height: 65.0,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10.0),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 12.0, vertical: 8.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.grey,
+                                    width: 0.5,
+                                    style: BorderStyle.solid),
+                                color: const Color(0xFFDFDFDF),
+                                borderRadius:
+                                const BorderRadius.all(Radius.circular(5)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 4,
+                                    offset: Offset(3, 4), // changes position of shadow
                                   ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Ver mais...',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                                    child: Image.asset("images/warning.png",
+                                        width: 15, height: 15),
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ),
-                  SizedBox(
-                    width: 400,
-                    child: Container(
-                        width: double.maxFinite,
-                        height: 65.0,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                          color: const Color(0xFFDFDFDF),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Image.asset("images/warning.png",
-                                  width: 15, height: 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  Container(
                                     child: Text(
-                                      'Certificado "Curso JAVA 40 horas" recusado.',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
+                                        'Certificado "${instituicaoList[index]}" recusado.',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      softWrap: false,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.fade,
                                     ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Ver mais...',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ),
-                  SizedBox(
-                    width: 400,
-                    child: Container(
-                        width: double.maxFinite,
-                        height: 65.0,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                          color: const Color(0xFFDFDFDF),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Image.asset("images/warning.png",
-                                  width: 15, height: 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Certificado "Curso JAVA 40 horas" recusado.',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Ver mais...',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ),
-                  SizedBox(
-                    width: 400,
-                    child: Container(
-                        width: double.maxFinite,
-                        height: 65.0,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                          color: const Color(0xFFDFDFDF),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Image.asset("images/warning.png",
-                                  width: 15, height: 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Certificado "Curso JAVA 40 horas" recusado.',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Ver mais...',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ),
-                  SizedBox(
-                    width: 400,
-                    child: Container(
-                        width: double.maxFinite,
-                        height: 65.0,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                          color: const Color(0xFFDFDFDF),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Image.asset("images/warning.png",
-                                  width: 15, height: 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Certificado "Curso JAVA 40 horas" recusado.',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Ver mais...',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ),
-                  SizedBox(
-                    width: 400,
-                    child: Container(
-                        width: double.maxFinite,
-                        height: 65.0,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                          color: const Color(0xFFDFDFDF),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Image.asset("images/warning.png",
-                                  width: 15, height: 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Certificado "Curso JAVA 40 horas" recusado.',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Ver mais...',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ),
-                  SizedBox(
-                    width: 400,
-                    child: Container(
-                        width: double.maxFinite,
-                        height: 65.0,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                          color: const Color(0xFFDFDFDF),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Image.asset("images/warning.png",
-                                  width: 15, height: 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Certificado "Curso JAVA 40 horas" recusado.',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Ver mais...',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ),
-                  SizedBox(
-                    width: 400,
-                    child: Container(
-                        width: double.maxFinite,
-                        height: 65.0,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10.0),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                          color: const Color(0xFFDFDFDF),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                              child: Image.asset("images/warning.png",
-                                  width: 15, height: 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Certificado "Curso JAVA 40 horas" recusado.',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      'Ver mais...',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13.5),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ),
+                                  )
+                                ],
+                              )),
+                        );
+                      }
+                  )
                 ],
               ),
             ],
