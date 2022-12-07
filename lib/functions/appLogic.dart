@@ -117,7 +117,7 @@ Future<void> ShowDialogResumo(BuildContext context, List<String> instituicaoList
                 ),
                 Container(
                     padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                    height: 200,
+                    height: 300,
                     width: 300,
                     child: SingleChildScrollView(
                       child: Column(
