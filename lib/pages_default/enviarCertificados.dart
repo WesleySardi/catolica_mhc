@@ -1,4 +1,5 @@
-import 'dart:io';
+import 'dart:convert';
+import 'dart:io' as io;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +18,8 @@ const List<String> list = <String>['Palestra', 'Estágio', 'Outros'];
 // Aqui colocar dinamicamente quais são ou deixar estático, sei lá
 
 class EnviarCertificados extends StatefulWidget {
-  const EnviarCertificados({Key? key}) : super(key: key);
+  final int matricula;
+  const EnviarCertificados({Key? key, required this.matricula}) : super(key: key);
 
   @override
   State<EnviarCertificados> createState() => _EnviarCertificadosState();
@@ -25,13 +27,86 @@ class EnviarCertificados extends StatefulWidget {
 
 class _EnviarCertificadosState extends State<EnviarCertificados> {
   int _counter = 0;
-  File? image; // Variável de armazenamento local
+  io.File? image; // Variável de armazenamento local
+
+  // Para transformar a imagem em base64 Codificado
+  late String imgBase64 = '';
+
+  void ShowModal(BuildContext context) {
+    //code to execute on button press
+    //botao aparece as coisas
+    showModalBottomSheet<void>(
+      context: context,
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
+      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          child: Center(
+            child: FractionallySizedBox(
+              heightFactor: 0.8,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          shape: StadiumBorder(),
+                          minimumSize: Size(300, 43),
+                          maximumSize: Size(300, 43),
+                          backgroundColor: Colors.red[900]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.add_chart_sharp),
+                          Text("Inserir certificado     ",
+                              style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EnviarCertificados(matricula: widget.matricula)));
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        shape: StadiumBorder(),
+                        minimumSize: Size(300, 43),
+                        maximumSize: Size(300, 43),
+                        backgroundColor: Colors.red[900]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(Icons.camera_enhance),
+                        Text(
+                          "Escanear certificado",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   String dropDownValue = list.first;
 
   // modal de foto pra iOS e Android
   Future<ImageSource?> showImageSource(BuildContext context) async {
-    if(Platform.isIOS){
+    if(io.Platform.isIOS){
       return showCupertinoModalPopup<ImageSource>(
           context: context,
           builder: (context) => CupertinoActionSheet(
@@ -69,12 +144,12 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
     }
   }
 
-  Future enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, image, dropDownValue) async {
+  Future enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue) async {
     var collection = FirebaseFirestore.instance.collection('certificados_mhc');
     collection.doc().set(
         {
-          'usu_imagem': image,
-          'usu_carga_horaria': _controllerWorkload.text,
+          'usu_imagem': imgBase64,
+          'usu_carga_horaria': double.parse(_controllerWorkload.text),
           'usu_id': 1111,
           'usu_instituicao': _controllerInstitution.text,
           'usu_motivo': "Teste",
@@ -95,7 +170,13 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
        final image = await ImagePicker().pickImage(source: source);
        if(image == null) return;
 
-       final imageTemporary = File(image.path);
+       final imageTemporary = io.File(image.path);
+
+       // teste
+       final bytes = io.File(image.toString()).readAsBytesSync();
+       imgBase64 = base64Encode(bytes);
+
+       // fim teste
        setState(() => this.image = imageTemporary);
      } on PlatformException catch (e) {
        print('Falha na obtenção da imagem: $e');
@@ -134,12 +215,6 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
   void initState(){
     super.initState();
     getDataEnviarCertificados();
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
   }
 
   @override
@@ -413,7 +488,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           onPressed: () {
             //code to execute on button press
 
-            enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, image, dropDownValue);
+            enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue);
 
           },
           child: Icon(Icons.check), //icon inside button
@@ -464,7 +539,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => DashBoard()));
+                                  builder: (context) => DashBoard(matricula: widget.matricula)));
                         },
                       ),
                       IconButton(
@@ -476,7 +551,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Certificados()));
+                                  builder: (context) => Certificados(matricula: widget.matricula)));
                         },
                       ),
                       IconButton(
@@ -488,7 +563,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Notificacoes()));
+                                  builder: (context) => Notificacoes(matricula: widget.matricula)));
                         },
                       ),
                       IconButton(
@@ -500,7 +575,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Perfil()));
+                                  builder: (context) => Perfil(matricula: widget.matricula)));
                         },
                       ),
                     ],

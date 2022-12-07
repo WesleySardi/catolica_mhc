@@ -1,5 +1,7 @@
+import 'package:catolica_mhc/pages_default/enviarCertificados.dart';
 import 'package:catolica_mhc/pages_default/login.dart';
 import 'package:catolica_mhc/pages_default/perfil.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -10,7 +12,24 @@ import 'doughnutChart.dart';
 import 'notificacoes.dart';
 
 class DashBoard extends StatefulWidget {
-  const DashBoard({Key? key}) : super(key: key);
+  final int matricula;
+
+  Future getUsuarioMatricula() async {
+    final QuerySnapshot result = await Future.value(
+        FirebaseFirestore.instance.collection("usuarios_mhc").get()); //.limit(1).
+    final List<DocumentSnapshot> documents = result.docs;
+
+    documents.forEach((element) {
+      if(matricula == element.get('cert_numero_de_matricula_usu')) {
+
+
+
+      }
+    });
+
+  }
+
+  const DashBoard({Key? key, required this.matricula}) : super(key: key);
 
   @override
   State<DashBoard> createState() => _DashBoardState();
@@ -24,6 +43,8 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   void initState() {
+    getCertificadosFirebase(matriculaList, instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
+    getUsuarioRelationFirebase(matriculaList);
     _tooltipBehavior =
         TooltipBehavior(enable: true, textStyle: const TextStyle(fontSize: 16));
     super.initState();
@@ -31,10 +52,200 @@ class _DashBoardState extends State<DashBoard> {
 
 //---------------------------------------------------------
 
+  void ShowModal(BuildContext context) {
+    //code to execute on button press
+    //botao aparece as coisas
+    showModalBottomSheet<void>(
+      context: context,
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
+      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          child: Center(
+            child: FractionallySizedBox(
+              heightFactor: 0.8,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          shape: StadiumBorder(),
+                          minimumSize: Size(300, 43),
+                          maximumSize: Size(300, 43),
+                          backgroundColor: Colors.red[900]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.add_chart_sharp),
+                          Text("Inserir certificado     ",
+                              style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EnviarCertificados(matricula: widget.matricula)));
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        shape: StadiumBorder(),
+                        minimumSize: Size(300, 43),
+                        maximumSize: Size(300, 43),
+                        backgroundColor: Colors.red[900]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(Icons.camera_enhance),
+                        Text(
+                          "Escanear certificado",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  late List<ChartData> chartData = <ChartData>[];
+
+
+  late List<int> matriculaList = <int>[];
+  late List<String> instituicaoList = <String>[];
+  late List<String> imgList = <String>[];
+  late List<double> carga_horariaList = <double>[];
+  late List<String> tipo_certificacaoList = <String>[];
+  late List<String> statusList = <String>[];
+
+  double somaDeCargaHorariaTeste = 0.0;
+  double somaDeCargaHorariaEstagio = 0.0;
+
+  double somaDeCargaHorariaPalestra = 0.0;
+  double somaDeCargaHorariaOutros = 0.0;
+
+  List<Map<String, String>> listaDeMap = <Map<String, String>>[];
+  List<Map<String, String>> listaDeMapAtt = <Map<String, String>>[];
+
+  Future getUsuarioRelationFirebase(List<int> matriculaList) async {
+    final QuerySnapshot result = await Future.value(
+        FirebaseFirestore.instance.collection("certificados_mhc")
+            .get()); //.limit(1).
+    final List<DocumentSnapshot> documents = result.docs;
+
+    int matriculaUsuario = widget.matricula;
+    late List<double> carga_horariaUsuario = <double>[];
+    late List<String> tipo_certificadoUsuario = <String>[];
+
+    // Pra cada documento dentro da collection usuarios_mhc
+    documents.forEach((element) {
+      if(element.get("cert_numero_de_matricula_usu") == matriculaUsuario){
+        carga_horariaUsuario.add(double.parse(element.get("cert_carga_horaria").toString()));
+        //print("Carga Horaria: $carga_horariaUsuario");
+        tipo_certificadoUsuario.add(element.get("cert_tipo_certificado").toString());
+        //print("Tipo certificado: $tipo_certificadoUsuario");
+      }
+    });
+
+    if(tipo_certificadoUsuario.length == carga_horariaUsuario.length){
+      for(int i = 0; i < tipo_certificadoUsuario.length; i++){
+        Map<String, String> mapTemp = {};
+        mapTemp['tipo_certificado'] = tipo_certificadoUsuario[i];
+        //print("${i} mapTemp certificado: ${mapTemp['tipo_certificado']}");
+
+        mapTemp['carga_horaria'] = carga_horariaUsuario[i].toString();
+        //print("${i} mapTemp certificado: ${mapTemp['carga_horaria']}");
+
+        listaDeMap.add(mapTemp);
+        //print("$i listdeMap: $listaDeMap");
+      }
+
+      for(int i = 0; i < listaDeMap.length; i++) {
+        if(listaDeMap[i]['tipo_certificado'] == 'Outros'){
+          somaDeCargaHorariaOutros += double.parse(listaDeMap[i]['carga_horaria']!);
+        } else if(listaDeMap[i]['tipo_certificado'] == 'Estágio'){
+          somaDeCargaHorariaEstagio += double.parse(listaDeMap[i]['carga_horaria']!);
+        }
+        else if(listaDeMap[i]['tipo_certificado'] == 'Palestra'){
+          somaDeCargaHorariaPalestra += double.parse(listaDeMap[i]['carga_horaria']!);
+        } /*else if(listaDeMap[i]['tipo_certificado'] == 'teste'){
+          somaDeCargaHorariaTeste += double.parse(listaDeMap[i]['carga_horaria']!);
+          print(somaDeCargaHorariaTeste);
+        }*/
+      }
+    } else {
+      throw Exception('Não passou na validação');
+    }
+
+    chartData = [
+      ChartData("Outros", somaDeCargaHorariaOutros, Color.fromRGBO(9,0,136,1)),
+      ChartData("Estágio", somaDeCargaHorariaEstagio, Color.fromRGBO(147,0,119,1)),
+      ChartData("Palestra", somaDeCargaHorariaPalestra, Color.fromRGBO(228,0,124,1)),
+    ];
+
+  }
+// fim teste
+
+  // Implementando dados dinâmicos no gráfico
+
+  Future getCertificadosFirebase(List<int> matriculaList, List<String> instituicaoList, List<String> imgList, List<double> carga_horariaList, List<String> tipo_certificacaoList, List<String> statusList) async {
+
+    final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get()); //.limit(1).
+
+    final List<DocumentSnapshot> documents = result.docs;
+
+    // Parte do teste pegar matricula
+    late int matricula;
+    //
+
+    late String instituicao;
+    late String img;
+    late double carga_horaria;
+    late String tipo_certificacao;
+    late String status;
+
+    documents.forEach((element) {
+      matricula = element.get("cert_numero_de_matricula_usu");
+      matriculaList.add(matricula);
+
+      instituicao = element.get("cert_instituicao").toString();
+      instituicaoList.add(instituicao);
+
+      img = element.get("cert_img").toString();
+      imgList.add(img);
+
+      carga_horaria = double.parse(element.get("cert_carga_horaria").toString());
+      carga_horariaList.add(carga_horaria);
+
+      status = element.get("cert_status").toString();
+      statusList.add(status);
+
+      tipo_certificacao = element.get("cert_tipo_certificado").toString();
+      tipo_certificacaoList.add(tipo_certificacao);
+    });
+  }
+
+
+// -- Fim obtenção de dados
+
 
   @override
   Widget build(BuildContext context) {
-    getUsuarioRelationFirebase();
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -226,7 +437,7 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => DashBoard()));
+                          MaterialPageRoute(builder: (context) => DashBoard(matricula: widget.matricula,)));
                     },
                   ),
                   IconButton(
@@ -238,7 +449,7 @@ class _DashBoardState extends State<DashBoard> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Certificados()));
+                              builder: (context) => Certificados(matricula: widget.matricula)));
                     },
                   ),
                   IconButton(
@@ -250,7 +461,7 @@ class _DashBoardState extends State<DashBoard> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Notificacoes()));
+                              builder: (context) => Notificacoes(matricula: widget.matricula)));
                     },
                   ),
                   IconButton(
@@ -260,7 +471,7 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Perfil()));
+                          MaterialPageRoute(builder: (context) => Perfil(matricula: widget.matricula)));
                     },
                   ),
                 ],

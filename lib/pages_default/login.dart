@@ -1,7 +1,6 @@
-import 'package:catolica_mhc/pages_default/cadastro.dart';
-import 'package:catolica_mhc/pages_default/esqueceusenha.dart';
 import 'package:catolica_mhc/pages_default/dashBoard.dart';
-import 'dashBoard.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -20,7 +19,6 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          width: double.infinity,
           // Background da aplicação
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -49,154 +47,139 @@ class _HomeState extends State<Home> {
               ),
 
               Container(
-                  height: 270,
+                  height: 460,
                   padding: EdgeInsets.only(left: 20, right: 20),
                   // TextFields de acesso
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      Container(
+                        height: 220,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextField(
+                              // Textfield de usuário
+                              style: TextStyle(
+                                fontFamily: 'Alata',
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                              cursorColor: Colors.white,
+                              controller: inputLogin,
+                              decoration: InputDecoration(
+                                suffixIcon: Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                                labelStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide:
+                                    BorderSide(color: Colors.white, width: 1.5)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide:
+                                    BorderSide(color: Colors.white, width: 1.5)),
+                                labelText: 'Digite a sua matrícula...',
+                                hoverColor: Colors.white,
+                              ),
+                            ),
 
 
-                      TextField(
-                        // Textfield de usuário
-                        style: TextStyle(
-                          fontFamily: 'Alata',
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                        keyboardType: TextInputType.number,
-                        cursorColor: Colors.white,
-                        controller: inputLogin,
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                              Icons.person,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                          labelStyle: TextStyle(
-                            color: Colors.white,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide:
-                              BorderSide(color: Colors.white, width: 1.5)),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide:
-                              BorderSide(color: Colors.white, width: 1.5)),
-                          labelText: 'Digite a sua matrícula...',
-                          hoverColor: Colors.white,
-                        ),
-                      ),
+                            TextField(
+                              // Textfield de usuário
+                              style: TextStyle(
+                                fontFamily: 'Alata',
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                              cursorColor: Colors.white,
+                              obscureText: true,
+                              controller: inputSenha,
+                              decoration: InputDecoration(
+                                suffixIcon: Icon(
+                                  Icons.lock,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                                suffixIconColor: Colors.white,
+                                iconColor: Colors.white10,
+                                labelStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide:
+                                    BorderSide(color: Colors.white, width: 1.5)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide:
+                                    BorderSide(color: Colors.white, width: 1.5)),
+                                labelText: 'Digite a sua senha...',
+                                hoverColor: Colors.white,
+                              ),
+                            ),
 
 
-                      TextField(
-                        // Textfield de usuário
-                        style: TextStyle(
-                          fontFamily: 'Alata',
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                        cursorColor: Colors.white,
-                        obscureText: true,
-                        controller: inputSenha,
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                              Icons.lock,
-                              color: Colors.white,
-                            size: 30,
-                          ),
-                          suffixIconColor: Colors.white,
-                          iconColor: Colors.white10,
-                          labelStyle: TextStyle(
-                            color: Colors.white,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide:
-                              BorderSide(color: Colors.white, width: 1.5)),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide:
-                              BorderSide(color: Colors.white, width: 1.5)),
-                          labelText: 'Digite a sua senha...',
-                          hoverColor: Colors.white,
-                        ),
-                      ),
+                            ElevatedButton(
+                              onPressed: () {
+                                _validaCadastro();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                padding: const EdgeInsets.fromLTRB(140, 15, 140, 15),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30)),
+                                onPrimary: Color(0xFF720507),
+                              ),
 
-
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => DashBoard()),
-                          );
-
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          padding: const EdgeInsets.fromLTRB(140, 15, 140, 15),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30)),
-                          onPrimary: Color(0xFF720507),
-                        ),
-
-                        child: Text(
-                          "ENTRAR",
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontFamily: 'Alata',
-                              color: Color(0xFF720507),
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-
-
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => EsqueciSenha()),
-                          );
-                        },
-                        child: Text(
-                          "Esqueceu a senha?",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontFamily: 'Alata'
-                          ),
+                              child: Text(
+                                "ENTRAR",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Alata',
+                                    color: Color(0xFF720507),
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   )
               ),
-
-              Container(
-                  height: 182,
-                  alignment: Alignment.bottomCenter,
-                  child: TextButton(
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Cadastro()),
-                      );
-                    },
-                    child: Text(
-                      "Ainda não tem uma conta? Crie uma!",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Alata',
-                        fontSize: 18,
-                      ),
-                    ),
-                  )
-              )
             ],
           ),
         ),
       ),
+    );
+  }
+  void _validaCadastro() async{
+
+    String banco_email = inputLogin.text;
+    String senha_email = inputSenha.text;
+    int matricula;
+
+    final QuerySnapshot result = await
+    Future.value(FirebaseFirestore.instance.collection("usuarios_mhc").
+    where("usu_email", isEqualTo: banco_email).limit(1).get()); //.limit(1).
+
+    final List<DocumentSnapshot> documents = result.docs;
+
+    documents.forEach((element) {
+      if(element.get("usu_senha") == senha_email){
+        matricula = element.get("usu_num_matricula");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DashBoard(matricula: matricula,)),
+        );
+      }
+    }
     );
   }
 }

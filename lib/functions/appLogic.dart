@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../pages_default/enviarCertificados.dart';
 
-void ShowModal(BuildContext context) {
+
+/*void ShowModal(BuildContext context) {
   //code to execute on button press
   //botao aparece as coisas
   showModalBottomSheet<void>(
@@ -41,7 +42,7 @@ void ShowModal(BuildContext context) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => EnviarCertificados()));
+                              builder: (context) => EnviarCertificados(matricula: widget.matricula)));
                     },
                   ),
                 ),
@@ -71,7 +72,7 @@ void ShowModal(BuildContext context) {
       );
     },
   );
-}
+}*/ // void show modal
 
 Color colorTextStyle = Color.fromRGBO(17, 17, 17, 1.0);
 
