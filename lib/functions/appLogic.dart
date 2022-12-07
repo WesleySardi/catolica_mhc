@@ -82,51 +82,89 @@ Future<void> ShowDialogResumo(BuildContext context, List<String> instituicaoList
       return AlertDialog(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(25))),
-            backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
+        backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
             //contentPadding: EdgeInsets.fromLTRB(5, 5, 5, 5),
         title: Text(
           'Resumo',
           textAlign: TextAlign.center,
           style: TextStyle(color: colorTextStyle, fontWeight: FontWeight.bold),
         ),
-        content: Column(
-          //mainAxisSize: MainAxisSize.min --> Deixa o pop-up menor, como um quadrado, igual o da dashboard
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Instituição: ${instituicaoList[index]}",
-                  style: TextStyle(color: colorTextStyle),
-                  textAlign: TextAlign.start,
+        content:
+            Column(
+              //mainAxisSize: MainAxisSize.min, --> Deixa o pop-up menor, como um quadrado, igual o da dashboard
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 3, color: Colors.black26),
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(22)),
+                    child: Image.asset(
+                        'images/certificado.jpg',
+                        height: 200,
+                        fit: BoxFit.cover
+                    ),
+                  )
                 ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Status: ${statusList[index]}",
-                  style: TextStyle(color: colorTextStyle),
-                  textAlign: TextAlign.start,
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Carga horária: ${carga_horariaList[index]}",
-                  style: TextStyle(color: colorTextStyle),
-                  textAlign: TextAlign.start,
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Tipo de certificado: ${tipo_certificacaoList[index]}",
-                  style: TextStyle(color: colorTextStyle),
-                  textAlign: TextAlign.start,
-                ),
-              ),
-          ],
-        ),
+                Container(
+                    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                    height: 200,
+                    width: 300,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget> [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: Text(
+                              "Instituição: ${instituicaoList[index]}",
+                              style: TextStyle(color: colorTextStyle),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: Text(
+                              "Status: ${statusList[index]}",
+                              style: TextStyle(color: colorTextStyle),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: Text(
+                              "Carga horária: ${carga_horariaList[index]}",
+                              style: TextStyle(color: colorTextStyle),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: Text(
+                              "Tipo de certificado: ${tipo_certificacaoList[index]}",
+                              style: TextStyle(color: colorTextStyle),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                )
+              ],
+            ),
         actions: <Widget>[
           TextButton(
             style: TextButton.styleFrom(
