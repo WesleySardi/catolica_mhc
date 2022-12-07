@@ -107,14 +107,13 @@ class _NotificacoesState extends State<Notificacoes> {
                       itemCount: numero_de_matricula_usuList.length,
                       itemBuilder: (BuildContext context, int index) {
                         return SizedBox(
+                          height: 100,
                           width: 400,
                           child: Container(
                               width: double.maxFinite,
-                              height: 65.0,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10.0),
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8.0),
+                              //height: 65.0,
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
+                              margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: Colors.grey,
@@ -140,17 +139,14 @@ class _NotificacoesState extends State<Notificacoes> {
                                         width: 15, height: 15),
                                   ),
                                   Container(
-                                    child: Text(
-                                        'Certificado "${tituloList[index]}" ${situacaoList[index]}.',
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15),
-                                      softWrap: false,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.fade,
-                                    ),
+                                      width: 300,
+                                      child: SingleChildScrollView(
+                                          child: Text(
+                                            'Certificado "'+tituloList[index]+'"\n'+situacaoList[index],
+                                            style: TextStyle(color: colorTextStyle, fontSize: 15),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        )
                                   )
                                 ],
                               )),

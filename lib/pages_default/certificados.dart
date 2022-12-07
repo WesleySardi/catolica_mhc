@@ -144,7 +144,7 @@ class _CertificadosState extends State<Certificados> {
                             child: InkWell(
                               child: Container(
                                   width: double.maxFinite,
-                                  height: 130.0,
+                                  height: 130.0,// ----> Sem o height ele deixa a caixa do tamanho que os componentem ocuparem, se utilizar ele trava o tamanho conforme o digitado
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 10.0),
                                   margin: const EdgeInsets.symmetric(
