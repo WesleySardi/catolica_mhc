@@ -60,6 +60,24 @@ class _CertificadosState extends State<Certificados> {
                       },
                     ),
                   ),
+                  Container(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          shape: StadiumBorder(),
+                          minimumSize: Size(300, 43),
+                          maximumSize: Size(300, 43),
+                          backgroundColor: Colors.red[900]),
+                      child: Text("Cancelar", style: TextStyle(fontSize: 20)),
+                      onPressed: () {
+                          setState(() {
+                            modal2 = false;
+                            iconModal = Icons.add;
+                            selectedOption2 = imgList.length+1;
+                          });
+                      },
+                    ),
+                  )
                 ],
               ),
             ),
@@ -81,6 +99,8 @@ class _CertificadosState extends State<Certificados> {
   late int selectedOption = imgList.length+1;
   late int selectedOption2 = imgList.length+1;
   late Color corCaixaCertificados = Colors.white24;
+  late bool modal2 = false;
+  late IconData iconModal = Icons.add;
 
   @override
   void initState() {
@@ -132,6 +152,14 @@ class _CertificadosState extends State<Certificados> {
       selectedOption = imgList.length+1;
       selectedOption2 = imgList.length+1;
     });
+  }
+
+  changeIcon(index) {
+    if(selectedOption2 == index && selectedOption == imgList.length+1){
+      return iconModal = Icons.edit;
+    }else {
+      return iconModal = Icons.add;
+    }
   }
 
   @override
@@ -209,7 +237,7 @@ class _CertificadosState extends State<Certificados> {
                                         width: 0.5,
                                         style: BorderStyle.solid),
                                     color: selectedOption == index && selectedOption2 == imgList.length+1 ? Colors.cyan :
-                                    selectedOption == imgList.length+1 && selectedOption2 == index ? Colors.red :
+                                    selectedOption == imgList.length+1 && selectedOption2 == index ? Colors.yellowAccent :
                                     Colors.white24,
                                     borderRadius: const BorderRadius.all(Radius.circular(5)),
                                     boxShadow: [
@@ -353,9 +381,11 @@ class _CertificadosState extends State<Certificados> {
                                                     setState(() {
                                                         selectedOption2 = index;
                                                         selectedOption = imgList.length+1;
+                                                        modal2 = true;
 
-                                                        ShowModal2(context);
-
+                                                        if(modal2 == true && selectedOption2 == index){
+                                                          changeIcon(index);
+                                                        }
                                                     });
                                                   }
                                               ))
@@ -367,7 +397,7 @@ class _CertificadosState extends State<Certificados> {
                                 setState(() {
                                   selectedOption = index;
                                   selectedOption2 = imgList.length+1;
-
+                                  changeIcon(index);
                                   corCaixaCertificados = selectedOption == imgList.length+1 && selectedOption2 == imgList.length+1 ? Colors.white24: Colors.cyan;
                                   ShowDialogResumo(context, tituloList, instituicaoList, coord_obsList, imgList, carga_horariaList, tipo_certificacaoList, statusList, index);
                                 });
@@ -386,7 +416,12 @@ class _CertificadosState extends State<Certificados> {
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
-            ShowModal(context);
+            if(iconModal == Icons.add) {
+              ShowModal(context);
+            }
+            if(iconModal == Icons.edit) {
+              ShowModal2(context);
+            }
             // var collection = FirebaseFirestore.instance.collection('certificados_mhc');
             // collection.doc().set(
             //     {
@@ -402,7 +437,7 @@ class _CertificadosState extends State<Certificados> {
             //     }
             // );
           },
-          child: Icon(selectedOption == true ? Icons.edit : Icons.add),
+          child: Icon(iconModal),  //Icons.edit : Icons.add
           //icon inside button
           backgroundColor: Color(0xFFb81317),
         ),
