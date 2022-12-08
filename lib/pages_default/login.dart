@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../services/auth_service.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -128,7 +130,9 @@ class _HomeState extends State<Home> {
 
                             ElevatedButton(
                               onPressed: () {
-                                _validaCadastro();
+                                AuthService.to.login(
+                                    inputLogin.text,
+                                    inputSenha.text);
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.white,
@@ -159,6 +163,8 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+
   void _validaCadastro() async{
 
     String banco_email = inputLogin.text;

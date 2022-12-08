@@ -1,3 +1,4 @@
+import 'package:catolica_mhc/database/db_functions.dart';
 import 'package:catolica_mhc/pages_default/enviarCertificados.dart';
 import 'package:catolica_mhc/pages_default/login.dart';
 import 'package:catolica_mhc/pages_default/perfil.dart';
@@ -7,13 +8,27 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../functions/appLogic.dart';
+import '../services/auth_service.dart';
 import 'certificados.dart';
 import 'doughnutChart.dart';
 import 'notificacoes.dart';
 
+List<String> usu_curso = <String>[];
+List<String> usu_email = <String>[];
+List<String> usu_img_perfil = <String>[];
+List<String> usu_nome = <String>[];
+List<int> usu_num_matricula = <int>[];
+List<String> usu_sobrenome = <String>[];
+List<String> usu_telefone = <String>[];
+
+double somaDeCargaHorariaTeste = 0.0;
+double somaDeCargaHorariaEstagio = 0.0;
+double somaDeCargaHorariaPalestra = 0.0;
+double somaDeCargaHorariaOutros = 0.0;
+
 class DashBoard extends StatefulWidget {
   final int matricula;
-  
+
   const DashBoard({Key? key, required this.matricula}) : super(key: key);
 
   @override
@@ -22,10 +37,9 @@ class DashBoard extends StatefulWidget {
 
 //---------------------------------------------------------
 class _DashBoardState extends State<DashBoard> {
-  late TooltipBehavior _tooltipBehavior;
 
-  // String nome = 'Uéixley'; // Trocar depois pra pegar o nome do banco
-  late String nome = '', sobrenome = '';
+  // Dados do estudante
+  late TooltipBehavior _tooltipBehavior;
 
   late List<int> matriculaList = <int>[];
   late List<ChartData> chartData = <ChartData>[];
@@ -36,43 +50,38 @@ class _DashBoardState extends State<DashBoard> {
   late List<String> statusList = <String>[];
 
   List<Map<String, String>> listaDeMap = <Map<String, String>>[];
-  List<Map<String, String>> listaDeMapAtt = <Map<String, String>>[];
-
-  double somaDeCargaHorariaTeste = 0.0;
-  double somaDeCargaHorariaEstagio = 0.0;
-  double somaDeCargaHorariaPalestra = 0.0;
-  double somaDeCargaHorariaOutros = 0.0;
 
   @override
   void initState() {
+    getMatriculaUsuario(AuthService.to.user.email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_num_matricula, usu_sobrenome, usu_telefone);
+
+
     getCertificadosFirebase(matriculaList, instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
     getDefineDadosGrafico();
-    getUsuarioMatricula(matriculaList);
     _tooltipBehavior =
         TooltipBehavior(enable: true, textStyle: const TextStyle(fontSize: 16));
     super.initState();
   }
+
 
 //---------------------------------------------------------
 
   // Pega os dados pro gráfico e organiza
   Future getDefineDadosGrafico() async {
     final QuerySnapshot result = await Future.value(
-        FirebaseFirestore.instance.collection("certificados_mhc")
-            .get()); //.limit(1).
+        FirebaseFirestore.instance.collection("certificados_mhc").get());
     final List<DocumentSnapshot> documents = result.docs;
 
-    int matriculaUsuario = widget.matricula;
     late List<double> carga_horariaUsuario = <double>[];
     late List<String> tipo_certificadoUsuario = <String>[];
 
     // Pra cada documento dentro da collection usuarios_mhc
     documents.forEach((element) {
-      if(element.get("cert_numero_de_matricula_usu") == matriculaUsuario){
+      if(element.get("cert_numero_de_matricula_usu") == usu_num_matricula[0]){
         carga_horariaUsuario.add(double.parse(element.get("cert_carga_horaria").toString()));
-        //print("Carga Horaria: $carga_horariaUsuario");
+        // print("Carga Horaria: $carga_horariaUsuario");
         tipo_certificadoUsuario.add(element.get("cert_tipo_certificado").toString());
-        //print("Tipo certificado: $tipo_certificadoUsuario");
+        // print("Tipo certificado: $tipo_certificadoUsuario");
       }
     });
 
@@ -143,37 +152,22 @@ class _DashBoardState extends State<DashBoard> {
       tipo_certificacaoList.add(tipo_certificacao);
     });
   }
-  
-  // Define as informações da dashboard
-  Future getUsuarioMatricula(List<int> matriculaList) async {
-    final QuerySnapshot result = await Future.value(
-        FirebaseFirestore.instance.collection("usuarios_mhc").get()); //.limit(1).
-    final List<DocumentSnapshot> documents = result.docs;
 
-    int tempMatricula = 0;
+  double calcularHorasFaltantes(){
+    double somaDasHoras = somaDeCargaHorariaOutros + somaDeCargaHorariaEstagio + somaDeCargaHorariaPalestra;
+    double horasFaltantes = 238 - somaDasHoras;
+    double porcentagem = (horasFaltantes/238)/*100*/;
 
-    for(int i = 0; i < matriculaList.length; i++) {
-      if(widget.matricula == matriculaList[i]) {
-        tempMatricula = matriculaList[i];
-      }
-    }
-
-    documents.forEach((element) {
-      if(widget.matricula == tempMatricula) {
-        nome = element.get('usu_nome');
-        sobrenome = element.get('usu_sobrenome');
-      }
-    });
-
-    print(nome);
-    print(sobrenome);
+    return porcentagem;
   }
-
-
 
   // Construção da dash
   @override
   Widget build(BuildContext context) {
+    late double percent = calcularHorasFaltantes();
+    late String textoProgressBar = '${percent * 100}%';
+
+    calcularHorasFaltantes();
 
     return Scaffold(
       appBar: AppBar(
@@ -187,8 +181,7 @@ class _DashBoardState extends State<DashBoard> {
                 color: Colors.black,
               ),
               onPressed: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Home()));
+                AuthService.to.logout();
               },
             ),
             Container(
@@ -203,8 +196,8 @@ class _DashBoardState extends State<DashBoard> {
                   },
                   onSelected: (value) {
                     if (value == 0) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Home()));
+                      Navigator.pop(context);
+                      AuthService.to.logout();
                     }
                   }),
             )
@@ -220,8 +213,8 @@ class _DashBoardState extends State<DashBoard> {
               Container(
                   alignment: FractionalOffset.topLeft,
                   margin: EdgeInsets.only(left: 40, top: 20, bottom: 15),
-                  child: Text(
-                    "Olá, \n${nome + sobrenome}!",
+                  child: usu_nome.isEmpty ? Center(child: CircularProgressIndicator()) : Text(
+                    "Olá, \n ${'${usu_nome.first} ${usu_sobrenome.first}'}",
                     style: TextStyle(
                       fontSize: 30,
                     ),
@@ -298,9 +291,9 @@ class _DashBoardState extends State<DashBoard> {
                       barRadius: Radius.circular(10),
                       lineHeight: 20.0,
                       animationDuration: 2500,
-                      percent: 0.5,
-                      center: const Text(
-                        "50.0%",
+                      percent: percent,
+                      center: Text(
+                        textoProgressBar,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       linearStrokeCap: LinearStrokeCap.roundAll,
@@ -409,35 +402,6 @@ class _DashBoardState extends State<DashBoard> {
           ),
         ),
       ),
-
-      // Barra inferior antiga, descontinuada
-      /* bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Color(0xffb81317),
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset("img/home_icon_branco.png", height: 33,),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset("img/relatorio_icon_branco.png", height: 33,),
-            label: "Certificados",
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset("img/btn_add.png", height: 43,),
-            label: "Enviar",
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset("img/notification_icon_branco.png", height: 33,),
-            label: "Notificações",
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset("img/usuario_icon_branco.png", height: 33,),
-            label: "Perfil",
-          ),
-        ],
-      ), */
     );
   }
 
