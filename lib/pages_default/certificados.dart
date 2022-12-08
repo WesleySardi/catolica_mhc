@@ -28,6 +28,8 @@ class _CertificadosState extends State<Certificados> {
   late List<String> situacaoList = <String>[];
 
   late int selectedOption = imgList.length+1;
+  late int selectedOption2 = imgList.length+1;
+  late Color corCaixaCertificados = Colors.white24;
 
   @override
   void initState() {
@@ -77,6 +79,7 @@ class _CertificadosState extends State<Certificados> {
     });
     setState(() {
       selectedOption = imgList.length+1;
+      selectedOption2 = imgList.length+1;
     });
   }
 
@@ -154,7 +157,9 @@ class _CertificadosState extends State<Certificados> {
                                         color: Colors.grey,
                                         width: 0.5,
                                         style: BorderStyle.solid),
-                                    color: selectedOption == index ? Colors.cyan : Colors.white24,
+                                    color: selectedOption == index && selectedOption2 == imgList.length+1 ? Colors.cyan :
+                                    selectedOption == imgList.length+1 && selectedOption2 == index ? Colors.red :
+                                    Colors.white24,
                                     borderRadius: const BorderRadius.all(Radius.circular(5)),
                                     boxShadow: [
                                       BoxShadow(
@@ -167,6 +172,7 @@ class _CertificadosState extends State<Certificados> {
                                     ],
                                   ),
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Container(
                                           padding:
@@ -185,7 +191,7 @@ class _CertificadosState extends State<Certificados> {
                                           )
                                       ),
                                       Container(
-                                        width: 200,
+                                        width: 170,
                                           child: SingleChildScrollView(
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,14 +292,33 @@ class _CertificadosState extends State<Certificados> {
                                               ],
                                             ),
                                           )
+                                      ),
+                                      Stack(
+                                        children: [
+                                          Positioned(
+                                              child: IconButton(
+                                                  icon: const Icon(Icons.delete_forever_rounded, size: 30),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                        selectedOption2 = index;
+                                                        selectedOption = imgList.length+1;
+
+
+                                                    });
+                                                  }
+                                              ))
+                                        ],
                                       )
                                     ],
                                   )),
                               onTap: () {
                                 setState(() {
                                   selectedOption = index;
+                                  selectedOption2 = imgList.length+1;
+
+                                  corCaixaCertificados = selectedOption == imgList.length+1 && selectedOption2 == imgList.length+1 ? Colors.white24: Colors.cyan;
                                   ShowDialogResumo(context, tituloList, instituicaoList, coord_obsList, imgList, carga_horariaList, tipo_certificacaoList, statusList, index);
-                                });//${instituicaoList[index]}
+                                });
                               },
                             ),
                           );

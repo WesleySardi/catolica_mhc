@@ -106,41 +106,44 @@ class _NotificacoesState extends State<Notificacoes> {
                       shrinkWrap: true,
                       itemCount: numero_de_matricula_usuList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return SizedBox(
-                          height: 110,
-                          width: 400,
-                          child: Container(
-                              width: double.maxFinite,
-                              //height: 65.0,
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
-                              margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.grey,
-                                    width: 0.5,
-                                    style: BorderStyle.solid),
-                                color: const Color(0xFFDFDFDF),
-                                borderRadius:
-                                const BorderRadius.all(Radius.circular(5)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 4,
-                                    offset: Offset(3, 4), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                                    child: Image.asset("images/warning.png",
-                                        width: 15, height: 15),
-                                  ),
-                                  Container(
-                                      width: 300,
-                                      child: SingleChildScrollView(
+                        if(situacaoList[index] == "Pendente"){
+                          return const SizedBox();
+                        } else {
+                          return SizedBox(
+                            height: 110,
+                            width: 400,
+                            child: Container(
+                                width: double.maxFinite,
+                                //height: 65.0,
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
+                                margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.grey,
+                                      width: 0.5,
+                                      style: BorderStyle.solid),
+                                  color: const Color(0xFFDFDFDF),
+                                  borderRadius:
+                                  const BorderRadius.all(Radius.circular(5)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 4,
+                                      offset: Offset(3, 4), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                                      child: Image.asset("images/warning.png",
+                                          width: 15, height: 15),
+                                    ),
+                                    Container(
+                                        width: 300,
+                                        child: SingleChildScrollView(
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
@@ -158,10 +161,11 @@ class _NotificacoesState extends State<Notificacoes> {
                                             ],
                                           ),
                                         )
-                                  )
-                                ],
-                              )),
-                        );
+                                    )
+                                  ],
+                                )),
+                          );
+                        }
                       }
                   )
                 ],
