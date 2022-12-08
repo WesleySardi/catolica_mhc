@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import '../application/checkAuth.dart';
 import '../functions/appLogic.dart';
 import 'dashBoard.dart';
 import 'enviarCertificados.dart';
@@ -416,7 +417,7 @@ class _CertificadosState extends State<Certificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => DashBoard(matricula: widget.matricula)));
+                                  builder: (context) => CheckAuth()));
                         },
                       ),
                       IconButton(
@@ -425,24 +426,7 @@ class _CertificadosState extends State<Certificados> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          setState(() {
-                            /*var collection = FirebaseFirestore.instance.collection('certificados_mhc');
-                            collection.doc().set(
-                                {
-                                  'uso_imagem': "testetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetesteteste",
-                                  'usu_carga_horaria': 42,
-                                  'usu_id': 3,
-                                  'usu_instituicao': "Centro Universitário Católica de Santa Catarina, vulgo Pontíficia Universidade Católica",
-                                  'usu_motivo': "Porque o cidadão enviou o certificado repetidas vezes, ocasionando na invalidação do mesmo.",
-                                  'usu_nome_do_curso': "Curso de Analise em porta aviões subaquáticos que são movidos a óleo",
-                                  'usu_numero_de_matricula': 1234,
-                                  'usu_status': "Enviado",
-                                  'usu_tipo_certificado': "teste",
-                                }
-                            );
-                            print("teste");*/
-                          }
-                          );
+                          setState(() {});
                           Navigator.push(
                               context,
                               MaterialPageRoute(

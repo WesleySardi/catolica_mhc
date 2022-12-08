@@ -29,7 +29,6 @@ Future getMatriculaUsuario(
     usu_sobrenome.add(element.get('usu_sobrenome'));
     usu_telefone.add(element.get('usu_telefone'));
   });
-
 }
 
 void addCertificado(
@@ -42,16 +41,16 @@ void addCertificado(
   docRef
       .doc()
       .set({
-        'cert_carga_horaria': 99999,
-        'cert_coord_obs': 'testando pelo DBFirestore',
-        'cert_id': 9999,
-        'cert_img': 'imagem muito incrivel',
-        'cert_instituicao': 'instituicao mt incrivel tbm',
-        'cert_numero_de_matricula_usu': AuthService.to.user.email,
+        'cert_carga_horaria': 62,
+        'cert_coord_obs': 'testando pelo DBFirestore2',
+        'cert_id': 999,
+        'cert_img': 'imagem2 muito2 incrivel2',
+        'cert_instituicao': 'instituicao2 mt2 incrivel2 tbm2',
+        'cert_numero_de_matricula_usu': 1315684,
         'cert_situacao_do_certificado': 'Pendente',
         'cert_status': 'Enviado',
-        'cert_tipo_certificado': 'Palestra',
-        'cert_titulo': 'Curso incrivelmente legal'
+        'cert_tipo_certificado': 'Estágio',
+        'cert_titulo': 'Curso2 incrivelmente2 legal2'
       })
       .then((value) => print("Deu certo!"))
       .catchError((error) => print('Deu errado :( $error'));

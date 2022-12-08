@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../application/checkAuth.dart';
 import '../funcionalidades/cruds/entities/CertificadosCrud.dart';
 import 'certificados.dart';
 import 'dashBoard.dart';
@@ -539,7 +540,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => DashBoard(matricula: widget.matricula)));
+                                  builder: (context) => CheckAuth()));
                         },
                       ),
                       IconButton(

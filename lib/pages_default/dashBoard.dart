@@ -21,11 +21,6 @@ List<int> usu_num_matricula = <int>[];
 List<String> usu_sobrenome = <String>[];
 List<String> usu_telefone = <String>[];
 
-double somaDeCargaHorariaTeste = 0.0;
-double somaDeCargaHorariaEstagio = 0.0;
-double somaDeCargaHorariaPalestra = 0.0;
-double somaDeCargaHorariaOutros = 0.0;
-
 class DashBoard extends StatefulWidget {
   final int matricula;
 
@@ -37,27 +32,30 @@ class DashBoard extends StatefulWidget {
 
 //---------------------------------------------------------
 class _DashBoardState extends State<DashBoard> {
-
   // Dados do estudante
   late TooltipBehavior _tooltipBehavior;
 
   late List<int> matriculaList = <int>[];
-  late List<ChartData> chartData = <ChartData>[];
+
   late List<String> instituicaoList = <String>[];
   late List<String> imgList = <String>[];
   late List<double> carga_horariaList = <double>[];
   late List<String> tipo_certificacaoList = <String>[];
   late List<String> statusList = <String>[];
+  late double percent = 0;
 
-  List<Map<String, String>> listaDeMap = <Map<String, String>>[];
+  late double somaDeCargaHorariaTeste = 0.0;
+  late double somaDeCargaHorariaEstagio = 0.0;
+  late double somaDeCargaHorariaPalestra = 0.0;
+  late double somaDeCargaHorariaOutros = 0.0;
+
 
   @override
   void initState() {
     getMatriculaUsuario(AuthService.to.user.email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_num_matricula, usu_sobrenome, usu_telefone);
-
+    getDefineDadosGrafico();
 
     getCertificadosFirebase(matriculaList, instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
-    getDefineDadosGrafico();
     _tooltipBehavior =
         TooltipBehavior(enable: true, textStyle: const TextStyle(fontSize: 16));
     super.initState();
@@ -66,8 +64,13 @@ class _DashBoardState extends State<DashBoard> {
 
 //---------------------------------------------------------
 
+  List<Map<String, String>> listaDeMap = <Map<String, String>>[];
+  List<ChartData> chartData = <ChartData>[];
+
   // Pega os dados pro gráfico e organiza
   Future getDefineDadosGrafico() async {
+    await getMatriculaUsuario(AuthService.to.user.email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_num_matricula, usu_sobrenome, usu_telefone);
+
     final QuerySnapshot result = await Future.value(
         FirebaseFirestore.instance.collection("certificados_mhc").get());
     final List<DocumentSnapshot> documents = result.docs;
@@ -98,11 +101,14 @@ class _DashBoardState extends State<DashBoard> {
       for(int i = 0; i < listaDeMap.length; i++) {
         if(listaDeMap[i]['tipo_certificado'] == 'Outros'){
           somaDeCargaHorariaOutros += double.parse(listaDeMap[i]['carga_horaria']!);
+          //print('somaDeCargaHorariaOutros: $somaDeCargaHorariaOutros');
         } else if(listaDeMap[i]['tipo_certificado'] == 'Estágio'){
           somaDeCargaHorariaEstagio += double.parse(listaDeMap[i]['carga_horaria']!);
+          //print('somaDeCargaHorariaEstagio: $somaDeCargaHorariaEstagio');
         }
         else if(listaDeMap[i]['tipo_certificado'] == 'Palestra'){
           somaDeCargaHorariaPalestra += double.parse(listaDeMap[i]['carga_horaria']!);
+          //print('somaDeCargaHorariaPalestra: $somaDeCargaHorariaPalestra');
         }
       }
     } else {
@@ -115,6 +121,9 @@ class _DashBoardState extends State<DashBoard> {
       ChartData("Palestra", somaDeCargaHorariaPalestra, Color.fromRGBO(228,0,124,1)),
     ];
 
+    percent = calcularHorasFaltantes(somaDeCargaHorariaOutros, somaDeCargaHorariaEstagio, somaDeCargaHorariaPalestra);
+
+    setState(() {});
   }
   
   // Pega os dados do certificado
@@ -153,10 +162,17 @@ class _DashBoardState extends State<DashBoard> {
     });
   }
 
-  double calcularHorasFaltantes(){
-    double somaDasHoras = somaDeCargaHorariaOutros + somaDeCargaHorariaEstagio + somaDeCargaHorariaPalestra;
-    double horasFaltantes = 238 - somaDasHoras;
-    double porcentagem = (horasFaltantes/238)/*100*/;
+  double calcularHorasFaltantes(double somaDeCargaHorariaOutros, double somaDeCargaHorariaEstagio, double somaDeCargaHorariaPalestra){
+    double somaDasHoras = 0;
+    double horasFaltantes = 0;
+    double porcentagem = 0;
+
+    somaDasHoras = somaDeCargaHorariaOutros + somaDeCargaHorariaEstagio + somaDeCargaHorariaPalestra;
+    //print('somaDasHoras: $somaDasHoras');
+    horasFaltantes = (somaDasHoras*100/238)/100;
+    //print('horasFaltantes; $horasFaltantes');
+    porcentagem = horasFaltantes;
+    //print('porcentagem: $porcentagem');
 
     return porcentagem;
   }
@@ -164,11 +180,10 @@ class _DashBoardState extends State<DashBoard> {
   // Construção da dash
   @override
   Widget build(BuildContext context) {
-    late double percent = calcularHorasFaltantes();
-    late String textoProgressBar = '${percent * 100}%';
+    double valorTextoProgress = percent * 100;
+    late String textoProgressBar = valorTextoProgress.toStringAsFixed(1);
 
-    calcularHorasFaltantes();
-
+    //addCertificado();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -213,10 +228,10 @@ class _DashBoardState extends State<DashBoard> {
               Container(
                   alignment: FractionalOffset.topLeft,
                   margin: EdgeInsets.only(left: 40, top: 20, bottom: 15),
-                  child: usu_nome.isEmpty ? Center(child: CircularProgressIndicator()) : Text(
+                  child: usu_nome.isEmpty ? const Center(child: CircularProgressIndicator()) : Text(
                     "Olá, \n ${'${usu_nome.first} ${usu_sobrenome.first}'}",
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 25,
                     ),
                   )),
               Container(
@@ -228,58 +243,62 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                 ),
               ),
-              Container(
-                alignment: Alignment.bottomCenter,
-                child: SfCircularChart(
-                  annotations: <CircularChartAnnotation>[
-                    CircularChartAnnotation(
-                        widget: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.green, shape: BoxShape.circle),
-                      child: IconButton(
-                        iconSize: 70,
-                        onPressed: () {
-                          ShowDialogResumo(context);
-                        },
-                        icon: Icon(Icons.pending_actions,
-                            size: 50,
-                            color: Color.fromRGBO(255, 255, 255, 1.0)),
-                      ),
-                    ))
-                  ],
-                  legend: Legend(
-                    isVisible: true,
-                    overflowMode: LegendItemOverflowMode.wrap,
-                    position: LegendPosition.bottom,
-                    textStyle: TextStyle(fontSize: 14),
-                  ),
-                  // Legenda abaixo do gráfico (default: direita)
-                  tooltipBehavior: _tooltipBehavior,
-                  series: <CircularSeries>[
-                    // Renders doughnut chart
-                    DoughnutSeries<ChartData, String>(
-                      dataSource: chartData,
-                      pointColorMapper: (ChartData data, _) => data.color,
-                      xValueMapper: (ChartData data, _) => data.x,
-                      yValueMapper: (ChartData data, _) => data.y,
-                      radius: '100%',
+              Stack(
+                clipBehavior: Clip.none,
+               alignment: FractionalOffset.center,
+               children: [
+                 Container(
+                   alignment: Alignment.bottomCenter,
+                   child: SfCircularChart(
+                     legend: Legend(
+                       isVisible: true,
+                       overflowMode: LegendItemOverflowMode.wrap,
+                       position: LegendPosition.bottom,
+                       textStyle: TextStyle(fontSize: 14),
+                     ),
+                     // Legenda abaixo do gráfico (default: direita)
+                     tooltipBehavior: _tooltipBehavior,
+                     series: <CircularSeries>[
+                       // Renders doughnut chart
+                       DoughnutSeries<ChartData, String>(
+                         dataSource: chartData,
+                         pointColorMapper: (ChartData data, _) => data.color,
+                         xValueMapper: (ChartData data, _) => data.x,
+                         yValueMapper: (ChartData data, _) => data.y,
+                         radius: '100%',
 
-                      dataLabelSettings: DataLabelSettings(
-                        isVisible: false,
-                        offset: Offset.fromDirection(1),
-                        textStyle: TextStyle(fontSize: 16),
-                      ),
-                      enableTooltip: true,
-                      //Liberando modificações Tooltip
+                         dataLabelSettings: DataLabelSettings(
+                           isVisible: false,
+                           offset: Offset.fromDirection(1),
+                           textStyle: TextStyle(fontSize: 16),
+                         ),
+                         enableTooltip: true,
+                         //Liberando modificações Tooltip
 
-                      explode:
-                          true, //Clicar no gráfico destaca a sua estatística
-                    ),
-                  ],
-                ),
+                         explode:
+                         true, //Clicar no gráfico destaca a sua estatística
+                       ),
+                     ],
+                   ),
 
-                // Desenvolvimento de progress bar e resumo
-              ),
+                   // Desenvolvimento de progress bar e resumo
+                 ),
+                 Positioned(
+                   top: 88,
+                     child: Container(
+                       decoration: BoxDecoration(
+                           color: Colors.green, shape: BoxShape.circle),
+                       child: IconButton(
+                         iconSize: 70,
+                         onPressed: () {
+                           ShowDialogResumo(context);
+                         },
+                         icon: Icon(Icons.pending_actions, size: 50,
+                             color: Color.fromRGBO(255, 255, 255, 1.0)),
+                       ),
+                     ),
+                 ),
+               ]),
               Column(
                 children: [
                   Container(
@@ -291,15 +310,27 @@ class _DashBoardState extends State<DashBoard> {
                       barRadius: Radius.circular(10),
                       lineHeight: 20.0,
                       animationDuration: 2500,
-                      percent: percent,
+                      percent: percent < 0 ? percent = 0 : percent,
                       center: Text(
-                        textoProgressBar,
+                        '$textoProgressBar%',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       linearStrokeCap: LinearStrokeCap.roundAll,
                       progressColor: Colors.green,
                     ),
                   ),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //       color: Colors.green, shape: BoxShape.circle),
+                  //   child: IconButton(
+                  //     iconSize: 70,
+                  //     onPressed: () {
+                  //       ShowDialogResumo(context);
+                  //     },
+                  //     icon: Icon(Icons.pending_actions, size: 50,
+                  //         color: Color.fromRGBO(255, 255, 255, 1.0)),
+                  //   ),
+                  // ),
                 ],
               ),
             ],
@@ -358,8 +389,10 @@ class _DashBoardState extends State<DashBoard> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => DashBoard(matricula: widget.matricula,)));
+                      // Dashboard
+                      setState(() {
+
+                      });
                     },
                   ),
                   IconButton(

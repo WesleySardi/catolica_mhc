@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../application/checkAuth.dart';
 import '../functions/appLogic.dart';
 import '../application/main.dart';
 import 'dashBoard.dart';
@@ -781,8 +782,8 @@ class _NotificacoesState extends State<Notificacoes> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DashBoard(matricula: widget.matricula))
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => CheckAuth()));
                         },
                       ),
                       IconButton(

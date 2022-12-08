@@ -67,6 +67,7 @@ class _HomeState extends State<Home> {
                                 fontSize: 18,
                                 color: Colors.white,
                               ),
+                              focusNode: primaryFocus,
                               keyboardType: TextInputType.emailAddress,
                               cursorColor: Colors.white,
                               controller: inputLogin,
@@ -91,7 +92,6 @@ class _HomeState extends State<Home> {
                                 hoverColor: Colors.white,
                               ),
                             ),
-
 
                             TextField(
                               // Textfield de usuário
@@ -127,7 +127,6 @@ class _HomeState extends State<Home> {
                               ),
                             ),
 
-
                             ElevatedButton(
                               onPressed: () {
                                 AuthService.to.login(
@@ -161,31 +160,6 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-    );
-  }
-
-
-  void _validaCadastro() async{
-
-    String banco_email = inputLogin.text;
-    String senha_email = inputSenha.text;
-    int matricula;
-
-    final QuerySnapshot result = await
-    Future.value(FirebaseFirestore.instance.collection("usuarios_mhc").
-    where("usu_email", isEqualTo: banco_email).limit(1).get()); //.limit(1).
-
-    final List<DocumentSnapshot> documents = result.docs;
-
-    documents.forEach((element) {
-      if(element.get("usu_senha") == senha_email){
-        matricula = element.get("usu_num_matricula");
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => DashBoard(matricula: matricula,)),
-        );
-      }
-    }
     );
   }
 }
