@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:catolica_mhc/database/db_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,8 +42,7 @@ Widget buildEditIcon(Color color) => buildCircle(
     );
 
 class Perfil extends StatefulWidget {
-  final int matricula;
-  const Perfil({Key? key, required this.matricula}) : super(key: key);
+  const Perfil({Key? key}) : super(key: key);
 
   @override
   State<Perfil> createState() => _PerfilState();
@@ -93,7 +93,7 @@ class _PerfilState extends State<Perfil> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EnviarCertificados(matricula: widget.matricula)));
+                                builder: (context) => EnviarCertificados()));
                       },
                     ),
                   ),
@@ -428,12 +428,11 @@ class _PerfilState extends State<Perfil> {
                   if (_controllerPhone.text != user.uso_telefone) {
 
 
+                    editarPerfil(_controllerPhone.text);
                     /*
                      Editar os dados no banco aqui (função criada antes ou sei lá)
                      */
 
-
-                    print('O botão mudou de função');
                   } else {
                     ShowModal(context);
                   }
@@ -498,7 +497,7 @@ class _PerfilState extends State<Perfil> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Certificados(matricula: widget.matricula)));
+                                  builder: (context) => Certificados()));
                         },
                       ),
                       IconButton(
@@ -510,7 +509,7 @@ class _PerfilState extends State<Perfil> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Notificacoes(matricula: widget.matricula)));
+                                  builder: (context) => Notificacoes()));
                         },
                       ),
                       IconButton(
@@ -522,7 +521,7 @@ class _PerfilState extends State<Perfil> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Perfil(matricula: widget.matricula,)));
+                                  builder: (context) => Perfil()));
                         },
                       ),
                     ],

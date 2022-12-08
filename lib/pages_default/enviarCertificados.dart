@@ -13,14 +13,14 @@ import 'certificados.dart';
 import 'dashBoard.dart';
 import 'login.dart';
 import 'notificacoes.dart';
+import '../database/db_functions.dart';
 import 'perfil.dart';
 
 const List<String> list = <String>['Palestra', 'Estágio', 'Outros'];
 // Aqui colocar dinamicamente quais são ou deixar estático, sei lá
 
 class EnviarCertificados extends StatefulWidget {
-  final int matricula;
-  const EnviarCertificados({Key? key, required this.matricula}) : super(key: key);
+  const EnviarCertificados({Key? key}) : super(key: key);
 
   @override
   State<EnviarCertificados> createState() => _EnviarCertificadosState();
@@ -71,7 +71,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EnviarCertificados(matricula: widget.matricula)));
+                                builder: (context) => EnviarCertificados()));
                       },
                     ),
                   ),
@@ -145,6 +145,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
     }
   }
 
+
+
   Future enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue) async {
     var collection = FirebaseFirestore.instance.collection('certificados_mhc');
     collection.doc().set(
@@ -189,33 +191,9 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
   TextEditingController _controllerInstitution = TextEditingController();
   TextEditingController _controllerWorkload = TextEditingController();
 
-  CertificadosCrud sendCertificate = CertificadosCrud(
-      1, // estudante não define
-      1234567, // estudante não define
-      'Curso de Java',
-      'Cursa Cursos Online',
-      'tipo_do_certificado',
-      'Em analise', // estudante não define
-      40,
-      'sem motivo', // estudante não define
-      'https://via.placeholder.com/1920x1360?text=Adicione+seu+certificado...');
-
-  Future<CertificadosCrud> getDataEnviarCertificados() async {
-    sendCertificate.id;
-    sendCertificate.numero_de_matricula;
-    sendCertificate.nome_do_curso;
-    sendCertificate.tipo_certificado;
-    sendCertificate.status;
-    sendCertificate.carga_horaria;
-    sendCertificate.motivo;
-    sendCertificate.imagem;
-    await 100;
-    return sendCertificate;
-  }
-
   void initState(){
     super.initState();
-    getDataEnviarCertificados();
+
   }
 
   @override
@@ -322,7 +300,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                   height: 150,
                                   fit: BoxFit.cover,
                                 )
-                                    : Image.network(sendCertificate.imagem,
+                                    : Image.network('https://placeholder.com/1920x1360?text=Adicione+o+seu+certificado...',
                                     fit: BoxFit.cover,),
                                 onTap: () {
                                   showImageSource(context);
@@ -374,8 +352,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                         obscureText: false,
                                         decoration: InputDecoration(
                                           border: UnderlineInputBorder(),
-                                          label: Text('Nome do Curso'),
-                                          hintText: "Digite o nome do curso..."
+                                          label: Text('Título do certificado'),
+                                          hintText: "Digite o título do certificado..."
                                         )
                                         ),
                                       ),
@@ -488,8 +466,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
-
-            enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue);
+            addCertificado(double.parse(_controllerWorkload.text), 'cert_img', _controllerInstitution.text, dropDownValue, _controllerDegreeName.text);
+            // enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue);
 
           },
           child: Icon(Icons.check), //icon inside button
@@ -552,7 +530,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Certificados(matricula: widget.matricula)));
+                                  builder: (context) => Certificados()));
                         },
                       ),
                       IconButton(
@@ -564,7 +542,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Notificacoes(matricula: widget.matricula)));
+                                  builder: (context) => Notificacoes()));
                         },
                       ),
                       IconButton(
@@ -576,7 +554,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Perfil(matricula: widget.matricula)));
+                                  builder: (context) => Perfil()));
                         },
                       ),
                     ],

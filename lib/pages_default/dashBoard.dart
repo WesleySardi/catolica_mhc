@@ -22,9 +22,7 @@ List<String> usu_sobrenome = <String>[];
 List<String> usu_telefone = <String>[];
 
 class DashBoard extends StatefulWidget {
-  final int matricula;
-
-  const DashBoard({Key? key, required this.matricula}) : super(key: key);
+  const DashBoard({Key? key}) : super(key: key);
 
   @override
   State<DashBoard> createState() => _DashBoardState();
@@ -291,7 +289,7 @@ class _DashBoardState extends State<DashBoard> {
                        child: IconButton(
                          iconSize: 70,
                          onPressed: () {
-                           ShowDialogResumo(context);
+                           ShowDialogResumoDashboard(context);
                          },
                          icon: Icon(Icons.pending_actions, size: 50,
                              color: Color.fromRGBO(255, 255, 255, 1.0)),
@@ -404,7 +402,7 @@ class _DashBoardState extends State<DashBoard> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Certificados(matricula: widget.matricula)));
+                              builder: (context) => Certificados()));
                     },
                   ),
                   IconButton(
@@ -416,7 +414,7 @@ class _DashBoardState extends State<DashBoard> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Notificacoes(matricula: widget.matricula)));
+                              builder: (context) => Notificacoes()));
                     },
                   ),
                   IconButton(
@@ -426,7 +424,7 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Perfil(matricula: widget.matricula)));
+                          MaterialPageRoute(builder: (context) => Perfil()));
                     },
                   ),
                 ],
@@ -478,7 +476,7 @@ class _DashBoardState extends State<DashBoard> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EnviarCertificados(matricula: widget.matricula)));
+                                builder: (context) => EnviarCertificados()));
                       },
                     ),
                   ),

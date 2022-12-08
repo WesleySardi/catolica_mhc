@@ -1,3 +1,9 @@
+import 'dart:io';
+import 'dart:ui';
+
+import 'dart:math';
+
+import 'package:catolica_mhc/pages_default/certificados.dart';
 import 'package:catolica_mhc/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -31,26 +37,106 @@ Future getMatriculaUsuario(
   });
 }
 
-void addCertificado(
-    /*Pegar os dados que serão inseridos e dps substituir*/) async {
+void editarPerfil(String novo_numero_tel) async {
   FirebaseFirestore db = await DBFirestore.get();
+  await getMatriculaUsuario(AuthService.to.user.email,
+      usu_curso,
+      usu_email,
+      usu_img_perfil,
+      usu_nome,
+      usu_num_matricula,
+      usu_sobrenome,
+      usu_telefone);
 
+  var docRef = await db.collection("usuarios_mhc");
+
+  docRef.doc().set({
+    'usu_curso': usu_curso[0],
+    'usu_email': usu_email[0],
+    'usu_img_perfil': usu_img_perfil[0],
+    'usu_nome': usu_nome[0],
+    'usu_num_matricula': usu_num_matricula[0],
+    'usu_sobrenome': usu_sobrenome[0],
+    'usu_telefone': novo_numero_tel,
+  });
+
+}
+
+void deletarCertificado(List<int> idList) async {
+
+  FirebaseFirestore db = await DBFirestore.get();
+  final QuerySnapshot result = await db.collection("certificados_mhc").get();
+  final List<DocumentSnapshot> documents = result.docs;
+
+  int idCertificado = idList[indexDoCertificadoSelecionado];
+
+  // Firestore.instance.collection("chats").document("ROOM_1")
+  //     .collection("messages").document(snapshot.data.documents[index]["id"])
+  //     .delete();
+  String nome_doc;
+
+
+  documents.forEach((element) async {
+    if(element.get('cert_id') == idCertificado){
+      //result.docs.first.data();
+      nome_doc = result.docs.first.id;
+      await db.collection('certificados_mhc').doc(nome_doc).delete()
+          .then((value) => print("Documento deletado"),
+          onError: (e) => print("Erro deletando o documento: $e"),);
+    }
+  });
+
+  print(result.docs.first.id);
+}
+
+void addCertificado(
+    double cert_carga_horaria,
+    String cert_img,
+    String cert_instituicao,
+    String cert_tipo_certificado,
+    String cert_titulo) async {
+  FirebaseFirestore db = await DBFirestore.get();
+  await getMatriculaUsuario(AuthService.to.user.email,
+      usu_curso,
+      usu_email,
+      usu_img_perfil,
+      usu_nome,
+      usu_num_matricula,
+      usu_sobrenome,
+      usu_telefone);
   // Referencia ao documento remoto
-  var docRef = await db.collection('certificados_mhc');
+  final QuerySnapshot result = await db.collection("certificados_mhc").get();
+  final List<DocumentSnapshot> documents = result.docs;
+  int id_do_certificado_novo = 1;
+
+  documents.forEach((element) {
+    print('Antes de somar: $id_do_certificado_novo');
+    id_do_certificado_novo++;
+    print('Depois de somar: $id_do_certificado_novo');
+  });
+
+  var docRef = await db.collection("certificados_mhc");
+
+  // print('cert_carga_horaria: $cert_carga_horaria');
+  // print('cert_img: $cert_img');
+  // print('cert_instituicao: $cert_instituicao');
+  // print('cert_tipo_certificado: $cert_tipo_certificado');
+  // print('cert_titulo: $cert_titulo');
+  // Inserir no firebase
 
   docRef
       .doc()
       .set({
-        'cert_carga_horaria': 62,
-        'cert_coord_obs': 'testando pelo DBFirestore2',
-        'cert_id': 999,
-        'cert_img': 'imagem2 muito2 incrivel2',
-        'cert_instituicao': 'instituicao2 mt2 incrivel2 tbm2',
-        'cert_numero_de_matricula_usu': 1315684,
-        'cert_situacao_do_certificado': 'Pendente',
+        'cert_carga_horaria': cert_carga_horaria,
+        'cert_coord_obs': '',
+        'cert_id': id_do_certificado_novo,
+        'cert_img': cert_img,
+        'cert_instituicao': cert_instituicao,
+        'cert_numero_de_matricula_usu': usu_num_matricula[0],
+        'cert_situacao_do_certificado': 'Enviado',
         'cert_status': 'Enviado',
-        'cert_tipo_certificado': 'Estágio',
-        'cert_titulo': 'Curso2 incrivelmente2 legal2'
+        'cert_tipo_certificado': cert_tipo_certificado,
+        'cert_titulo': cert_titulo
       })
       .then((value) => print("Deu certo!"))
       .catchError((error) => print('Deu errado :( $error'));

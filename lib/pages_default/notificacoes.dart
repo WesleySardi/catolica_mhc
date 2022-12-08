@@ -9,28 +9,8 @@ import 'perfil.dart';
 
 import 'certificados.dart';
 
-/*void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PAC-4 Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Notificacoes(),
-    );
-  }
-}
-*/
 class Notificacoes extends StatefulWidget {
-  final int matricula;
-  const Notificacoes({Key? key, required this.matricula}) : super(key: key);
+  const Notificacoes({Key? key}) : super(key: key);
 
   @override
   State<Notificacoes> createState() => _NotificacoesState();
@@ -78,7 +58,7 @@ class _NotificacoesState extends State<Notificacoes> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EnviarCertificados(matricula: widget.matricula)));
+                                builder: (context) => EnviarCertificados()));
                       },
                     ),
                   ),
@@ -794,7 +774,7 @@ class _NotificacoesState extends State<Notificacoes> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Certificados(matricula: widget.matricula))
+                              MaterialPageRoute(builder: (context) => Certificados())
                             );
                         },
                       ),
@@ -806,7 +786,7 @@ class _NotificacoesState extends State<Notificacoes> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Notificacoes(matricula: widget.matricula))
+                              MaterialPageRoute(builder: (context) => Notificacoes())
                             );
                         },
                       ),
@@ -818,7 +798,7 @@ class _NotificacoesState extends State<Notificacoes> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Perfil(matricula: widget.matricula))
+                              MaterialPageRoute(builder: (context) => Perfil())
                             );
                         },
                       ),

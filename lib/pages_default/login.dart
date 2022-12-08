@@ -67,7 +67,7 @@ class _HomeState extends State<Home> {
                                 fontSize: 18,
                                 color: Colors.white,
                               ),
-                              focusNode: primaryFocus,
+                              textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.emailAddress,
                               cursorColor: Colors.white,
                               controller: inputLogin,
@@ -100,6 +100,9 @@ class _HomeState extends State<Home> {
                                 fontSize: 18,
                                 color: Colors.white,
                               ),
+                              onSubmitted: (text){
+                                AuthService.to.login(inputLogin.text, inputSenha.text);
+                              },
                               cursorColor: Colors.white,
                               obscureText: true,
                               controller: inputSenha,
