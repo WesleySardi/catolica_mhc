@@ -1,5 +1,6 @@
 import 'package:catolica_mhc/funcionalidades/cruds/entities/CertificadosCrud.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -263,7 +264,7 @@ class _CertificadosState extends State<Certificados> {
                                               size: Size.fromRadius(55),
                                               // Image radius
                                               child: Image.asset(
-                                                "images/certificado.jpg",
+                                                imgList[index],
                                                 fit: BoxFit.cover,
                                               ),
                                             ),

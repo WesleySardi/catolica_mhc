@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:catolica_mhc/funcionalidades/cruds/entities/storage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,30 +14,11 @@ import 'dashBoard.dart';
 import 'login.dart';
 import 'notificacoes.dart';
 import 'perfil.dart';
+import 'lib/funcionalidades/cruds/entities/storage_service.dart';
 
 const List<String> list = <String>['Palestra', 'Estágio', 'Outros'];
 // Aqui colocar dinamicamente quais são ou deixar estático, sei lá
 
-/*
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PAC-4 Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: EnviarCertificados(),
-    );
-  }
-}
-*/
 class EnviarCertificados extends StatefulWidget {
   const EnviarCertificados({Key? key}) : super(key: key);
 
@@ -51,6 +34,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
 
   // modal de foto pra iOS e Android
   Future<ImageSource?> showImageSource(BuildContext context) async {
+    final Storage storage = Storage();
+
     if(Platform.isIOS){
       return showCupertinoModalPopup<ImageSource>(
           context: context,
@@ -62,7 +47,29 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
               ),
               CupertinoActionSheetAction(
                 child: Text('Galeria'),
-                onPressed: () => pickImage(ImageSource.gallery),
+                onPressed: () async {
+                  final results = await FilePicker.platform.pickFiles(
+                    allowMultiple: false,
+                    type: FileType.custom,
+                    allowedExtensions: ['png', 'jpg'],
+                  );
+
+                  if (results == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No file selected.'),
+                      )
+                    );
+                    return null;
+                  }
+
+                  final ImageSource path = results.files.single.path! as ImageSource;
+                  final fileName = results.files.single.name;
+
+                  pickImage(path);
+
+                  storage.uploadFile(path as String, fileName).then((value) => print('Done'));
+                },//pickImage(ImageSource.gallery),
               ),
             ],
           )
@@ -94,15 +101,17 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
    image, definida ali em cima ^^
   */
   Future pickImage(ImageSource source) async{
-    try{
-      final image = await ImagePicker().pickImage(source: source);
-      if(image == null) return;
 
-      final imageTemporary = File(image.path);
-      setState(() => this.image = imageTemporary);
-    } on PlatformException catch (e) {
-      print('Falha na obtenção da imagem: $e');
-    }
+    try{
+        final image = await ImagePicker().pickImage(source: source);
+        if(image == null) return;
+
+        final imageTemporary = File(image.path);
+
+        setState(() => this.image = imageTemporary);
+      } on PlatformException catch (e) {
+        print('Falha na obtenção da imagem: $e');
+      }
   }
 
   // initialize the controllers
@@ -135,10 +144,46 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
   }
 
   Future enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, image, dropDownValue) async {
+
+    //final Storage storage = Storage();
+
+    // try{
+    //   final image = await ImagePicker().pickImage(source: source);
+    //   if(image == null) return;
+    //
+    //   final imageTemporary = File(image.path);
+    //   final nameTemporary = File(image.name);
+    //
+    //
+    //
+    //   setState(() => this.image = imageTemporary);
+    // } on PlatformException catch (e) {
+    //   print('Falha na obtenção da imagem: $e');
+    // }
+
+    // final results = await FilePicker.platform.pickFiles(
+    //   allowMultiple: false,
+    //   type: FileType.custom,
+    //   allowedExtensions: ['png','jpg'],
+    // );
+    //
+    // if(results == null) return;
+
+    // final imageTemporary = File(image.path).toString();
+    // final nameTemporary = File(image.name).toString();
+    //
+    // final File path = image.files.single.path!;
+    // final File fileName = image.files.single.name!;
+    //
+    // print(path.toString());
+    // print(fileName);
+    //
+    // storage.uploadFile(imageTemporary, nameTemporary).then((value) => print('Done'));
+    
     var collection = FirebaseFirestore.instance.collection('certificados_mhc');
     collection.doc().set(
         {
-          'usu_imagem': image,
+          'usu_imagem': image,//storage.uploadFile('test', image),
           'usu_carga_horaria': _controllerWorkload.text,
           'usu_id': 1111,
           'usu_instituicao': _controllerInstitution.text,
@@ -148,7 +193,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           'usu_status': "Enviado",
           'usu_tipo_certificado': dropDownValue,
         }
-    ).then((value) => print('Deu certo! --> '+collection.doc().toString())).catchError((error) => print('deu errado! $error'));
+    ).then((value) => print('Deu certo! --> '+collection.doc().toString())).catchError((error) => print('Deu errado! $error'));
   }
 
   void initState(){
