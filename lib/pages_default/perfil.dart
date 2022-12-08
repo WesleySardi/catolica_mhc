@@ -1,30 +1,46 @@
+import 'dart:io';
+import 'package:catolica_mhc/database/db_functions.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:catolica_mhc/funcionalidades/cruds/entities/UsuariosCrud.dart';
+import '../application/checkAuth.dart';
 import '../functions/appLogic.dart';
-import '../application/main.dart';
+import '../functions/imageWidget.dart';
 import 'certificados.dart';
+import 'enviarCertificados.dart';
 import 'login.dart';
 import 'notificacoes.dart';
 import 'dashBoard.dart';
-/*
-void main() {
-  runApp(const MyApp());
-}
+import 'package:image_picker/image_picker.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PAC-4 Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+Widget buildCircle({
+  required Widget child,
+  required double all,
+  required Color color,
+}) =>
+    ClipOval(
+      child: Container(
+        padding: EdgeInsets.all(all),
+        color: color,
+        child: child,
       ),
-      home: Perfil(),
     );
-  }
-}
-*/
+
+Widget buildEditIcon(Color color) => buildCircle(
+      color: Colors.white,
+      all: 2,
+      child: buildCircle(
+        color: color,
+        all: 5,
+        child: Icon(
+          Icons.edit,
+          color: Colors.white,
+          size: 18,
+        ),
+      ),
+    );
+
 class Perfil extends StatefulWidget {
   const Perfil({Key? key}) : super(key: key);
 
@@ -33,42 +49,211 @@ class Perfil extends StatefulWidget {
 }
 
 class _PerfilState extends State<Perfil> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+
+  Icon iconeFloatingButton = Icon(Icons.add);
+  bool _activateFieldPhone = false;
+  File? image; // Variável de armazenamento local
+
+  void ShowModal(BuildContext context) {
+    //code to execute on button press
+    //botao aparece as coisas
+    showModalBottomSheet<void>(
+      context: context,
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
+      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          child: Center(
+            child: FractionallySizedBox(
+              heightFactor: 0.8,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          shape: StadiumBorder(),
+                          minimumSize: Size(300, 43),
+                          maximumSize: Size(300, 43),
+                          backgroundColor: Colors.red[900]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.add_chart_sharp),
+                          Text("Inserir certificado     ",
+                              style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EnviarCertificados()));
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        shape: StadiumBorder(),
+                        minimumSize: Size(300, 43),
+                        maximumSize: Size(300, 43),
+                        backgroundColor: Colors.red[900]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(Icons.camera_enhance),
+                        Text(
+                          "Escanear certificado",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<ImageSource?> showImageSource(BuildContext context) async {
+    if (Platform.isIOS) {
+      return showCupertinoModalPopup<ImageSource>(
+          context: context,
+          builder: (context) => CupertinoActionSheet(
+                actions: [
+                  CupertinoActionSheetAction(
+                    child: Text('Câmera'),
+                    onPressed: () => pickImage(ImageSource.camera),
+                  ),
+                  CupertinoActionSheetAction(
+                    child: Text('Galeria'),
+                    onPressed: () => pickImage(ImageSource.gallery),
+                  ),
+                ],
+              ));
+    } else {
+      return showModalBottomSheet(
+          context: context,
+          builder: (context) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.camera_alt),
+                    title: Text('Câmera'),
+                    onTap: () => pickImage(ImageSource.camera),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.camera_alt),
+                    title: Text('Galeria'),
+                    onTap: () => pickImage(ImageSource.gallery),
+                  )
+                ],
+              ));
+    }
+  }
+
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() => this.image = imageTemporary);
+    } on PlatformException catch (e) {
+      print('Falha na obtenção da imagem: $e');
+    }
+  }
+
+  UsuariosCrud user = UsuariosCrud(
+      0,
+      // ^^ Matricula
+      '_usu_nome',
+      '_usu_sobrenome',
+      '_usu_email',
+      '_usu_senha',
+      '_usu_curso',
+      '_uso_telefone',
+      '_uso_img_perfil');
+
+  Future<UsuariosCrud> getDataUser() async {
+    user.usu_nome;
+    user.usu_sobrenome;
+    user.usu_email;
+    user.usu_senha;
+    user.usu_curso;
+    user.uso_telefone;
+    user.uso_img_perfil;
+    await 100;
+    return user;
+  }
+
+  // initialize the controllers
+  TextEditingController _controllerPhone = TextEditingController();
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerPassword = TextEditingController();
+
+  void initState() {
+    super.initState();
+    getDataUser();
+    _controllerPhone.text = user.uso_telefone ?? "";
+    _controllerEmail.text = user.usu_email ?? "";
+    _controllerPassword.text = user.usu_senha ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
+    final color = Color(0xFFC0090C);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
+    bool keyboardIsOpened = MediaQuery.of(context).viewInsets.bottom != 0.0;
+
     return Scaffold(
         appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
+          automaticallyImplyLeading: false,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            Container(
-              child:
-              Image.asset("images/user_icon.png", width: 80, height: 35),
-            )
-          ],
+              Container(
+                child: PopupMenuButton(
+                    iconSize: 10,
+                    icon: Image.asset("images/user_icon.png",
+                        width: 80, height: 35),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(value: 0, child: Text('Logout')),
+                      ];
+                    },
+                    onSelected: (value) {
+                      if (value == 0) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Home()));
+                      }
+                    }),
+              )
+            ],
+          ),
+          backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.white,
-      ),
         body: SingleChildScrollView(
           child: Container(
               child: Column(
@@ -87,14 +272,32 @@ class _PerfilState extends State<Perfil> {
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircleAvatar(
-                    backgroundColor: Color(0xFF720507),
-                    radius: 50.0,
-                    backgroundImage: AssetImage('images/user_icon.png'),
-                  ),
+                children: [
+                  image != null
+                      ? ImageWidget(
+                          image: image!,
+                          onClicked: (source) => pickImage(source))
+                      : InkWell(
+                          child: Stack(
+                            children: [
+                              Transform.scale(
+                                scale: 1.2,
+                                child: CircleAvatar(
+                                    backgroundColor: Color(0xFF720507),
+                                    radius: 50.0,
+                                    backgroundImage:
+                                        AssetImage('images/user_icon.png')),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 4,
+                                child: buildEditIcon(color),
+                              )
+                            ],
+                          ),
+                          onTap: () => showImageSource(context)),
                   Text(
-                    "João Ferreira",
+                    user.usu_nome ?? "",
                     style: TextStyle(
                       fontSize: 40.0,
                       color: Colors.black,
@@ -103,7 +306,8 @@ class _PerfilState extends State<Perfil> {
                     ),
                   ),
                   Text(
-                    'Engenharia de Software',
+                    user.usu_curso ?? "",
+                    /*esse ??"" significa que se n tiver valor, ele deixa nulo*/
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20.0,
@@ -121,13 +325,39 @@ class _PerfilState extends State<Perfil> {
                         Icons.phone,
                         color: Color(0xFF720507),
                       ),
-                      title: Text(
-                        "47 99999-9999",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontFamily: "Source Sans Pro",
-                        ),
+                      title: Row(
+                        children: [
+                          Flexible(
+                            child: TextField(
+                              onChanged: (String value) =>
+                                  iconeFloatingButton = Icon(Icons.edit),
+                              controller: _controllerPhone,
+                              obscureText: false,
+                              enabled: _activateFieldPhone,
+                              decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                                label: Text('Telefone'),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (_activateFieldPhone == false) {
+                                    _activateFieldPhone = true;
+                                  } else if (_activateFieldPhone == true &&
+                                      _controllerPhone.text !=
+                                          user.uso_telefone) {
+                                    _activateFieldPhone = true;
+                                    iconeFloatingButton = Icon(Icons.edit);
+                                  } else {
+                                    _activateFieldPhone = false;
+                                    iconeFloatingButton = Icon(Icons.add);
+                                  }
+                                });
+                              },
+                              icon: Icon(Icons.edit)),
+                        ],
                       ),
                     ),
                   ),
@@ -137,46 +367,79 @@ class _PerfilState extends State<Perfil> {
                         Icons.account_circle,
                         color: Color(0xFF720507),
                       ),
-                      title: Text(
-                        "teste@gmail.com",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontFamily: "Source Sans Pro",
-                        ),
+                      title: Row(
+                        children: [
+                          Flexible(
+                            child: TextField(
+                              controller: _controllerEmail,
+                              obscureText: false,
+                              enabled: false,
+                              decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                                label: Text('Email'),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   Card(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.lock,
-                        color: Color(0xFF720507),
-                      ),
-                      title: Text(
-                        "************",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontFamily: "Source Sans Pro",
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(
+                            Icons.lock,
+                            color: Color(0xFF720507),
+                          ),
+                          title: Row(
+                            children: [
+                              Flexible(
+                                child: TextField(
+                                  controller: _controllerPassword,
+                                  obscureText: true,
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                    border: UnderlineInputBorder(),
+                                    label: Text('Senha'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ],
           )),
         ),
-        floatingActionButton: FloatingActionButton(
-          //Floating action button on Scaffold
-          onPressed: () {
-            //code to execute on button press
-            ShowModal(context);
-          },
-          child: Icon(Icons.add), //icon inside button
-          backgroundColor: Color(0xFFb81317),
-        ),
+        floatingActionButton: keyboardIsOpened
+            ? null
+            : FloatingActionButton(
+                //Floating action button on Scaffold
+                onPressed: () {
+                  //code to execute on button press
+
+                  // Segurança de edição
+                  if (_controllerPhone.text != user.uso_telefone) {
+
+
+                    editarPerfil(_controllerPhone.text);
+                    /*
+                     Editar os dados no banco aqui (função criada antes ou sei lá)
+                     */
+
+                  } else {
+                    ShowModal(context);
+                  }
+                },
+                child: iconeFloatingButton, //icon inside button
+                backgroundColor: Color(0xFFb81317),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         //floating action button position to center
         bottomNavigationBar: Container(
@@ -221,8 +484,8 @@ class _PerfilState extends State<Perfil> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DashBoard())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => CheckAuth()));
                         },
                       ),
                       IconButton(
@@ -233,8 +496,8 @@ class _PerfilState extends State<Perfil> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Certificados())
-                          );
+                              MaterialPageRoute(
+                                  builder: (context) => Certificados()));
                         },
                       ),
                       IconButton(
@@ -245,8 +508,8 @@ class _PerfilState extends State<Perfil> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Notificacoes())
-                          );
+                              MaterialPageRoute(
+                                  builder: (context) => Notificacoes()));
                         },
                       ),
                       IconButton(
@@ -257,15 +520,21 @@ class _PerfilState extends State<Perfil> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Perfil())
-                          );
+                              MaterialPageRoute(
+                                  builder: (context) => Perfil()));
                         },
                       ),
                     ],
                   ),
                 ),
               ),
-            ))
-    );
+            )));
+  }
+
+  void dispose() {
+    _controllerPhone.dispose();
+    _controllerEmail.dispose();
+    _controllerPassword.dispose();
+    super.dispose();
   }
 }

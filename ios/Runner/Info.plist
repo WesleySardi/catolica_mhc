@@ -45,5 +45,13 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+
+	<key>NSCameraUsageDescription</key>
+    <string> Tirar foto do certificado </string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Selecionar foto do certificado</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Gravar áudio</string>
+
 </dict>
 </plist>

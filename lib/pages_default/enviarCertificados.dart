@@ -1,30 +1,24 @@
+import 'dart:convert';
+import 'dart:io' as io;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../application/main.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../application/checkAuth.dart';
+import '../funcionalidades/cruds/entities/CertificadosCrud.dart';
+import 'certificados.dart';
 import 'dashBoard.dart';
 import 'login.dart';
-import 'perfil.dart';
-import 'certificados.dart';
 import 'notificacoes.dart';
-/*
-void main() {
-  runApp(const MyApp());
-}
+import '../database/db_functions.dart';
+import 'perfil.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+const List<String> list = <String>['Palestra', 'Estágio', 'Outros'];
+// Aqui colocar dinamicamente quais são ou deixar estático, sei lá
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PAC-4 Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: EnviarCertificados(),
-    );
-  }
-}
-*/
 class EnviarCertificados extends StatefulWidget {
   const EnviarCertificados({Key? key}) : super(key: key);
 
@@ -34,11 +28,172 @@ class EnviarCertificados extends StatefulWidget {
 
 class _EnviarCertificadosState extends State<EnviarCertificados> {
   int _counter = 0;
+  io.File? image; // Variável de armazenamento local
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  // Para transformar a imagem em base64 Codificado
+  late String imgBase64 = '';
+
+  void ShowModal(BuildContext context) {
+    //code to execute on button press
+    //botao aparece as coisas
+    showModalBottomSheet<void>(
+      context: context,
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
+      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          child: Center(
+            child: FractionallySizedBox(
+              heightFactor: 0.8,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          shape: StadiumBorder(),
+                          minimumSize: Size(300, 43),
+                          maximumSize: Size(300, 43),
+                          backgroundColor: Colors.red[900]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.add_chart_sharp),
+                          Text("Inserir certificado     ",
+                              style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EnviarCertificados()));
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        shape: StadiumBorder(),
+                        minimumSize: Size(300, 43),
+                        maximumSize: Size(300, 43),
+                        backgroundColor: Colors.red[900]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(Icons.camera_enhance),
+                        Text(
+                          "Escanear certificado",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String dropDownValue = list.first;
+
+  // modal de foto pra iOS e Android
+  Future<ImageSource?> showImageSource(BuildContext context) async {
+    if(io.Platform.isIOS){
+      return showCupertinoModalPopup<ImageSource>(
+          context: context,
+          builder: (context) => CupertinoActionSheet(
+            actions: [
+              CupertinoActionSheetAction(
+                child: Text('Câmera'),
+                onPressed: () => pickImage(ImageSource.camera),
+              ),
+              CupertinoActionSheetAction(
+                child: Text('Galeria'),
+                onPressed: () => pickImage(ImageSource.gallery),
+              ),
+            ],
+          )
+      );
+    } else {
+      return showModalBottomSheet(
+          context: context,
+          builder: (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Câmera'),
+                onTap: () => pickImage(ImageSource.camera),
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Galeria'),
+                onTap: () => pickImage(ImageSource.gallery),
+              )
+            ],
+          )
+      );
+    }
+  }
+
+
+
+  Future enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue) async {
+    var collection = FirebaseFirestore.instance.collection('certificados_mhc');
+    collection.doc().set(
+        {
+          'usu_imagem': imgBase64,
+          'usu_carga_horaria': double.parse(_controllerWorkload.text),
+          'usu_id': 1111,
+          'usu_instituicao': _controllerInstitution.text,
+          'usu_motivo': "Teste",
+          'usu_nome_do_curso': _controllerDegreeName.text,
+          'usu_numero_de_matricula': 0000,
+          'usu_status': "Enviado",
+          'usu_tipo_certificado': dropDownValue,
+        }
+    ).then((value) => print('Deu certo! --> '+collection.doc().toString())).catchError((error) => print('deu errado! $error'));
+  }
+
+  /*
+   Lógica pra abrir de onde vai pegar a foto e armazenar ela na variável local
+   image, definida ali em cima ^^
+  */
+  Future pickImage(ImageSource source) async{
+     try{
+       final image = await ImagePicker().pickImage(source: source);
+       if(image == null) return;
+
+       final imageTemporary = io.File(image.path);
+
+       // teste
+       final bytes = io.File(image.toString()).readAsBytesSync();
+       imgBase64 = base64Encode(bytes);
+
+       // fim teste
+       setState(() => this.image = imageTemporary);
+     } on PlatformException catch (e) {
+       print('Falha na obtenção da imagem: $e');
+     }
+   }
+
+  // initialize the controllers
+  TextEditingController _controllerDegreeName = TextEditingController();
+  TextEditingController _controllerInstitution = TextEditingController();
+  TextEditingController _controllerWorkload = TextEditingController();
+
+  void initState(){
+    super.initState();
+
   }
 
   @override
@@ -46,29 +201,44 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
+    bool keyboardIsOpened = MediaQuery.of(context).viewInsets.bottom != 0.0;
+
     return Scaffold(
         appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
+          automaticallyImplyLeading: false,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            Container(
-              child:
-              Image.asset("images/user_icon.png", width: 80, height: 35),
-            )
-          ],
+              Container(
+                child: PopupMenuButton(
+                    iconSize: 10,
+                    icon: Image.asset("images/user_icon.png",
+                        width: 80, height: 35),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(value: 0, child: Text('Logout')),
+                      ];
+                    },
+                    onSelected: (value) {
+                      if (value == 0) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Home()));
+                      }
+                    }),
+              )
+            ],
+          ),
+          backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.white,
-      ),
         body: SingleChildScrollView(
           child: Container(
               child: Column(
@@ -123,8 +293,19 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                             // Image border
                             child: SizedBox.fromSize(
                               size: Size.fromRadius(85), // Image radius
-                              child: Image.asset("images/certificado.jpg",
-                                  fit: BoxFit.cover),
+                              child: InkWell(
+                                child: image != null ? Image.file(
+                                  image!,
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                )
+                                    : Image.network('https://placeholder.com/1920x1360?text=Adicione+o+seu+certificado...',
+                                    fit: BoxFit.cover,),
+                                onTap: () {
+                                  showImageSource(context);
+                                },
+                              ),
                             ),
                           ),
                         )
@@ -166,26 +347,16 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                      title: const Text(
-                                        "Nome:",
-                                        style: TextStyle(
-                                          color: Color(0xFF720507),
-                                          fontSize: 16.0,
-                                          fontFamily: "Source Sans Pro",
-                                          fontWeight: FontWeight.bold,
+                                      title: TextField(
+                                        controller: _controllerDegreeName,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                          border: UnderlineInputBorder(),
+                                          label: Text('Título do certificado'),
+                                          hintText: "Digite o título do certificado..."
+                                        )
                                         ),
                                       ),
-                                      subtitle: Container(
-                                          padding:
-                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                          child: const Text(
-                                            "Curso JAVA 40 horas",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15.0,
-                                              fontFamily: "Source Sans Pro",
-                                            ),
-                                          ))),
                                 ),
                               ),
                               Container(
@@ -202,27 +373,16 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                      title: const Text(
-                                        "Instituição:",
-                                        style: TextStyle(
-                                          color: Color(0xFF720507),
-                                          fontSize: 16.0,
-                                          fontFamily: "Source Sans Pro",
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      subtitle: Container(
-                                          padding:
-                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                          child: const Text(
-                                            "Universidade PUC-SC",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15.0,
-                                              fontFamily: "Source Sans Pro",
-                                              //fontWeight: FontWeight.bold,
-                                            ),
-                                          ))),
+                                    title: TextField(
+                                        controller: _controllerInstitution,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            label: Text('Instituição'),
+                                            hintText: "Digite o nome da instituição..."
+                                        )
+                                    ),
+                                  ),
                                 ),
                               ),
                               Container(
@@ -239,27 +399,56 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                      title: const Text(
-                                        "Carga Horária:",
-                                        style: TextStyle(
-                                          color: Color(0xFF720507),
-                                          fontSize: 16.0,
-                                          fontFamily: "Source Sans Pro",
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    title: TextField(
+                                        controller: _controllerWorkload,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            label: Text('Carga horária'),
+                                            hintText: "Digite as horas do certificado..."
+                                        )
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 1,
+                                      blurRadius: 15,
+                                      offset: Offset(
+                                          9, 7), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: Card(
+                                  child: ListTile(
+                                    title: DropdownButton<String>(
+                                      value: dropDownValue,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      elevation: 16,
+                                      style: const TextStyle(color: Colors.deepPurple),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.deepPurpleAccent,
                                       ),
-                                      subtitle: Container(
-                                          padding:
-                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                          child: const Text(
-                                            "50 horas",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15.0,
-                                              fontFamily: "Source Sans Pro",
-                                              //fontWeight: FontWeight.bold,
-                                            ),
-                                          ))),
+                                      onChanged: (String? value) {
+                                        // This is called when the user selects an item.
+                                        setState(() {
+                                          dropDownValue = value!;
+                                          print("Opção selecionada: $dropDownValue");
+                                        });
+                                      },
+                                      items: list.map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    )
+                                  ),
                                 ),
                               ),
                             ],
@@ -273,10 +462,13 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
             ],
           )),
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: keyboardIsOpened ? null : FloatingActionButton(
           //Floating action button on Scaffold
           onPressed: () {
             //code to execute on button press
+            addCertificado(double.parse(_controllerWorkload.text), 'cert_img', _controllerInstitution.text, dropDownValue, _controllerDegreeName.text);
+            // enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue);
+
           },
           child: Icon(Icons.check), //icon inside button
           backgroundColor: Color(0xFFb81317),
@@ -325,8 +517,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DashBoard())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => CheckAuth()));
                         },
                       ),
                       IconButton(
@@ -337,8 +529,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Certificados())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => Certificados()));
                         },
                       ),
                       IconButton(
@@ -349,8 +541,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Notificacoes())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => Notificacoes()));
                         },
                       ),
                       IconButton(
@@ -361,8 +553,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Perfil())
-                            );
+                              MaterialPageRoute(
+                                  builder: (context) => Perfil()));
                         },
                       ),
                     ],
