@@ -10,4 +10,12 @@ Para realizar o login na aplicação, será utilizado o email: `usuario_teste@gm
 
 O dispositivo utilizado para testes, do android emulator é foi o: `Pixel 3a API 31`.
 
-Caso de o problema de Null Sound Safety, será necessário ir
+Caso de o problema de Null Sound Safety, será necessário fazer esse passo a passo:
+
+## Primeiro passo:
+
+- Ir em Run, no topo do Android Studio e ir em editar configurações.
+
+### Imagem de exemplo: 
+
+![alt text](imgs_readme/passo1_null-sound-safety.png)
