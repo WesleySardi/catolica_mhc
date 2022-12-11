@@ -23,6 +23,6 @@ Caso de o problema de Null Sound Safety, será necessário fazer esse passo a pa
 
 ## Segundo Passo:
 
-- Após acessar a área de edição de configurações, adicione no campo `additional arguments` o seguinte: `no-null-sound-safety`
+- Após acessar a área de edição de configurações, adicione no campo `additional run args` o seguinte: `--no-null-sound-safety`
 
 ![alt text](imgs_readme/passo2_null-sound-safety.png)
