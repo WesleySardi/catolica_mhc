@@ -107,63 +107,80 @@ class _NotificacoesState extends State<Notificacoes> {
                       itemCount: numero_de_matricula_usuList.length,
                       itemBuilder: (BuildContext context, int index) {
                         if(situacaoList[index] == "Pendente"){
-                          return const SizedBox();
+                          return const InkWell();
                         } else {
-                          return SizedBox(
-                            height: 110,
-                            width: 400,
-                            child: Container(
-                                width: double.maxFinite,
-                                //height: 65.0,
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
-                                margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.grey,
-                                      width: 0.5,
-                                      style: BorderStyle.solid),
-                                  color: const Color(0xFFDFDFDF),
-                                  borderRadius:
-                                  const BorderRadius.all(Radius.circular(5)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 2,
-                                      blurRadius: 4,
-                                      offset: Offset(3, 4), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                                      child: Image.asset("images/warning.png",
-                                          width: 15, height: 15),
-                                    ),
-                                    Container(
-                                        width: 300,
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Certificado "'+tituloList[index]+'"',
-                                                style: TextStyle(color: colorTextStyle, fontSize: 15),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                              Padding(padding: EdgeInsets.fromLTRB(0, 2, 0, 2)),
-                                              Text(
-                                                situacaoList[index],
-                                                style: TextStyle(color: Colors.red, fontSize: 15),
-                                                textAlign: TextAlign.start,
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                    )
-                                  ],
-                                )),
+                          return InkWell(
+                            child: SizedBox(
+                              height: 110,
+                              width: 400,
+                              child: Container(
+                                  width: double.maxFinite,
+                                  //height: 65.0,
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
+                                  margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey,
+                                        width: 0.5,
+                                        style: BorderStyle.solid),
+                                    color: const Color(0xFFDFDFDF),
+                                    borderRadius:
+                                    const BorderRadius.all(Radius.circular(5)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 4,
+                                        offset: Offset(3, 4), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                                        child: Image.asset("images/warning.png",
+                                            width: 15, height: 15),
+                                      ),
+                                      Container(
+                                          width: 300,
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Certificado "'+tituloList[index]+'"',
+                                                  style: TextStyle(color: colorTextStyle, fontSize: 15),
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                                Padding(padding: EdgeInsets.fromLTRB(0, 2, 0, 2)),
+                                                Text(
+                                                  situacaoList[index],
+                                                  style: TextStyle(color: Colors.red, fontSize: 15),
+                                                  textAlign: TextAlign.start,
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                      )
+                                    ],
+                                  )),
+                            ),
+                            onTap: () async {
+                              /*final QuerySnapshot result = await Future.value(FirebaseFirestore.instance.collection("certificados_mhc").get());
+
+                              final List<DocumentSnapshot> documents = result.docs;
+
+                              late String situacao;
+
+                              documents.forEach((element) {
+                                situacao = element.get("cert_situacao_do_certificado").toString();
+                                situacaoList.add(situacao);
+                              });
+                              setState(() {
+                                selectedOption = numero_de_matricula_usuList.length+1;
+                              });*/
+                            },
                           );
                         }
                       }
