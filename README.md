@@ -14,7 +14,7 @@ Caso de o problema de Null Sound Safety, será necessário fazer esse passo a pa
 
 ## Primeiro passo:
 
-- Ir em Run, no topo do Android Studio e ir em editar configurações.
+- Ir em `Run`, no topo do Android Studio e ir em `Edit configurations`.
 
 ### Imagem de exemplo: 
 
