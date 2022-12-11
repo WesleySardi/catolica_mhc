@@ -2,6 +2,8 @@
 
 Projeto PAC 4a Fase do App de Horas Complementares, desenvolvido no curso de Engenharia de Software.
 
+Equipe de desenvolvimento: Davi Prudente Ferreira, Fernanda Corrêa Borges, Marcos Paulo Gonçalves Junior, Victor Hugo Bosse Kühn e Wesley Erik Sardi
+
 ## Instruções básicas
 
 Ao realizar o clone do repositório para seu dispositivo, será necessário ir ao arquivo pubspec.yaml e realizar o  `pub get` das dependências. Obs.: caso necessário, após dar `pub get`, dê `pub upgrade`. Além disso, há uma dependência chamada `get`, que precisa ser da versão `^3.26.0`, então caso a versão dela seja alterada, é necessário defini-la como a versão citada para não dar problemas.
