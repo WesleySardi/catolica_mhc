@@ -8,12 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../application/checkAuth.dart';
-import '../funcionalidades/cruds/entities/CertificadosCrud.dart';
-import 'certificados.dart';
-import 'dashBoard.dart';
-import 'login.dart';
-import 'notificacoes.dart';
 import '../database/db_functions.dart';
+import '../services/auth_service.dart';
+import 'certificados.dart';
+import 'notificacoes.dart';
 import 'perfil.dart';
 
 const List<String> list = <String>['Palestra', 'Estágio', 'Outros'];
@@ -27,7 +25,6 @@ class EnviarCertificados extends StatefulWidget {
 }
 
 class _EnviarCertificadosState extends State<EnviarCertificados> {
-  int _counter = 0;
   io.File? image; // Variável de armazenamento local
 
   // Para transformar a imagem em base64 Codificado
@@ -145,8 +142,6 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
     }
   }
 
-
-
   Future enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue) async {
     var collection = FirebaseFirestore.instance.collection('certificados_mhc');
     collection.doc().set(
@@ -230,8 +225,8 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                     },
                     onSelected: (value) {
                       if (value == 0) {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Home()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CheckAuth()));
+                        AuthService.to.logout();
                       }
                     }),
               )
@@ -401,6 +396,7 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
                                   child: ListTile(
                                     title: TextField(
                                         controller: _controllerWorkload,
+                                        keyboardType: TextInputType.number,
                                         obscureText: false,
                                         decoration: InputDecoration(
                                             border: UnderlineInputBorder(),
@@ -467,8 +463,6 @@ class _EnviarCertificadosState extends State<EnviarCertificados> {
           onPressed: () {
             //code to execute on button press
             addCertificado(double.parse(_controllerWorkload.text), 'cert_img', _controllerInstitution.text, dropDownValue, _controllerDegreeName.text);
-            // enviarCertificados(_controllerDegreeName, _controllerInstitution, _controllerWorkload, imgBase64, dropDownValue);
-
           },
           child: Icon(Icons.check), //icon inside button
           backgroundColor: Color(0xFFb81317),

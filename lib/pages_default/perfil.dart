@@ -7,6 +7,7 @@ import 'package:catolica_mhc/funcionalidades/cruds/entities/UsuariosCrud.dart';
 import '../application/checkAuth.dart';
 import '../functions/appLogic.dart';
 import '../functions/imageWidget.dart';
+import '../services/auth_service.dart';
 import 'certificados.dart';
 import 'enviarCertificados.dart';
 import 'login.dart';
@@ -49,7 +50,6 @@ class Perfil extends StatefulWidget {
 }
 
 class _PerfilState extends State<Perfil> {
-
 
   Icon iconeFloatingButton = Icon(Icons.add);
   bool _activateFieldPhone = false;
@@ -177,15 +177,16 @@ class _PerfilState extends State<Perfil> {
   UsuariosCrud user = UsuariosCrud(
       0,
       // ^^ Matricula
-      '_usu_nome',
-      '_usu_sobrenome',
-      '_usu_email',
-      '_usu_senha',
-      '_usu_curso',
-      '_uso_telefone',
-      '_uso_img_perfil');
+      usu_nome[0],
+      usu_sobrenome[0],
+      email!,
+      usu_senha[0],
+      usu_curso[0],
+      usu_telefone[0],
+      usu_img_perfil[0]);
 
   Future<UsuariosCrud> getDataUser() async {
+    await getMatriculaUsuario(email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_senha, usu_num_matricula, usu_sobrenome, usu_telefone);
     user.usu_nome;
     user.usu_sobrenome;
     user.usu_email;
@@ -193,7 +194,6 @@ class _PerfilState extends State<Perfil> {
     user.usu_curso;
     user.uso_telefone;
     user.uso_img_perfil;
-    await 100;
     return user;
   }
 
@@ -245,8 +245,8 @@ class _PerfilState extends State<Perfil> {
                     },
                     onSelected: (value) {
                       if (value == 0) {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Home()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CheckAuth()));
+                        AuthService.to.logout();
                       }
                     }),
               )
@@ -281,7 +281,7 @@ class _PerfilState extends State<Perfil> {
                           child: Stack(
                             children: [
                               Transform.scale(
-                                scale: 1.2,
+                                scale: 1.1,
                                 child: CircleAvatar(
                                     backgroundColor: Color(0xFF720507),
                                     radius: 50.0,
@@ -296,13 +296,16 @@ class _PerfilState extends State<Perfil> {
                             ],
                           ),
                           onTap: () => showImageSource(context)),
-                  Text(
-                    user.usu_nome ?? "",
-                    style: TextStyle(
-                      fontSize: 40.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Pacifico',
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      user.usu_nome + " " + user.usu_sobrenome ?? "",
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Pacifico',
+                      ),
                     ),
                   ),
                   Text(
@@ -426,13 +429,9 @@ class _PerfilState extends State<Perfil> {
 
                   // Segurança de edição
                   if (_controllerPhone.text != user.uso_telefone) {
-
-
+                    _activateFieldPhone = false;
+                    setState(() {});
                     editarPerfil(_controllerPhone.text);
-                    /*
-                     Editar os dados no banco aqui (função criada antes ou sei lá)
-                     */
-
                   } else {
                     ShowModal(context);
                   }
