@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import '../application/checkAuth.dart';
 import '../database/db_firestore.dart';
 import '../functions/appLogic.dart';
 import '../services/auth_service.dart';
@@ -13,17 +14,7 @@ import 'enviarCertificados.dart';
 import 'login.dart';
 import 'notificacoes.dart';
 import 'perfil.dart';
-
-List<String> usu_curso = <String>[];
-List<String> usu_email = <String>[];
-List<String> usu_img_perfil = <String>[];
-List<String> usu_nome = <String>[];
-List<int> usu_num_matricula = <int>[];
-List<String> usu_sobrenome = <String>[];
-List<String> usu_telefone = <String>[];
-List<int> idList = <int>[];
-
-int indexDoCertificadoSelecionado = 0;
+int indexDoCertificadoSelecionadoCertificados = 0;
 
 class Certificados extends StatefulWidget {
   const Certificados({Key? key}) : super(key: key);
@@ -34,6 +25,7 @@ class Certificados extends StatefulWidget {
 
 class _CertificadosState extends State<Certificados> {
 
+  late List<int> idListCertificados = <int>[];
   Color colorTextStyle = Color.fromRGBO(17, 17, 17, 1.0);
   Color colorTextStyle_titles = Color.fromRGBO(255, 0, 0, 1.0);
 
@@ -91,8 +83,8 @@ class _CertificadosState extends State<Certificados> {
                         ],
                       ),
                       onPressed: () {
-                          deletarCertificado(idList);
-                          setState(() {});
+                          deletarCertificado(idListCertificados);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Certificados()));
                       },
                     ),
                   ),
@@ -127,7 +119,7 @@ class _CertificadosState extends State<Certificados> {
   @override
   void initState() {
     getCertificadosFirebase(
-        idList,
+        idListCertificados,
         tituloList,
         instituicaoList,
         coord_obsList,
@@ -139,13 +131,14 @@ class _CertificadosState extends State<Certificados> {
     super.initState();
   }
 
-  Future getCertificadosFirebase(List<int> idList, List<String> tituloList,
+  Future getCertificadosFirebase(
+      List<int> idListCertificados, List<String> tituloList,
       List<String> instituicaoList, List<String> coord_obsList,
       List<String> imgList, List<double> carga_horariaList,
       List<String> tipo_certificacaoList, List<String> statusList,
       List<String> situacaoList) async {
 
-    await getMatriculaUsuario(AuthService.to.user.email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_num_matricula, usu_sobrenome, usu_telefone);
+    await getMatriculaUsuario(email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_senha, usu_num_matricula, usu_sobrenome, usu_telefone);
 
     FirebaseFirestore db = await DBFirestore.get();
     final QuerySnapshot result = await db.collection("certificados_mhc").get();
@@ -164,7 +157,7 @@ class _CertificadosState extends State<Certificados> {
     documents.forEach((element) {
       if(element.get('cert_numero_de_matricula_usu') == usu_num_matricula[0]){
         id_certificado = element.get("cert_id") ?? 0;
-        idList.add(id_certificado);
+        idListCertificados.add(id_certificado);
 
         titulo = element.get("cert_titulo").toString() ?? '';
         tituloList.add(titulo);
@@ -233,8 +226,21 @@ class _CertificadosState extends State<Certificados> {
                 },
               ),
               Container(
-                child:
-                Image.asset("images/user_icon.png", width: 80, height: 35),
+                child: PopupMenuButton(
+                  iconSize: 10,
+                  icon: Image.asset("images/user_icon.png",
+                      width: 80, height: 35),
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(value: 0, child: Text('Logout')),
+                    ];
+                  },
+                  onSelected: (value) {
+                    if (value == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckAuth()));
+                      AuthService.to.logout();
+                    }
+                  }),
               )
             ],
           ),
@@ -490,7 +496,7 @@ class _CertificadosState extends State<Certificados> {
                                                       .delete_forever_rounded,
                                                       size: 30),
                                                   onPressed: () {
-                                                    indexDoCertificadoSelecionado = index;
+                                                    indexDoCertificadoSelecionadoCertificados = index;
                                                     setState(() {
                                                       selectedOption2 = index;
                                                       selectedOption =
@@ -551,20 +557,6 @@ class _CertificadosState extends State<Certificados> {
             if (iconModal == Icons.edit) {
               ShowModal2(context);
             }
-            // var collection = FirebaseFirestore.instance.collection('certificados_mhc');
-            // collection.doc().set(
-            //     {
-            //        'cert_img': "",
-            //        'cert_carga_horaria': 40,
-            //        'cert_id': 1,
-            //        'cert_instituicao': "Centro Universitário Católica de Santa Catarina, vulgo Pontíficia Universidade Católica",
-            //        'cert_coord_obs': "Porque o cidadão enviou o certificado repetidas vezes, ocasionando na invalidação do mesmo.",
-            //        'cert_titulo': "Curso de Java da Udemy",
-            //        'cert_numero_de_matricula_usu': 1234567,
-            //        'cert_status': "Enviado",
-            //        'cert_tipo_certificado': "Palestra",
-            //     }
-            // );
           },
           child: Icon(iconModal), //Icons.edit : Icons.add
           //icon inside button
@@ -624,24 +616,7 @@ class _CertificadosState extends State<Certificados> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          setState(() {
-                            /*var collection = FirebaseFirestore.instance.collection('certificados_mhc');
-                            collection.doc().set(
-                                {
-                                  'uso_imagem': "testetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetestetesteteste",
-                                  'usu_carga_horaria': 42,
-                                  'usu_id': 3,
-                                  'usu_instituicao': "Centro Universitário Católica de Santa Catarina, vulgo Pontíficia Universidade Católica",
-                                  'usu_motivo': "Porque o cidadão enviou o certificado repetidas vezes, ocasionando na invalidação do mesmo.",
-                                  'usu_nome_do_curso': "Curso de Analise em porta aviões subaquáticos que são movidos a óleo",
-                                  'usu_numero_de_matricula': 1234,
-                                  'usu_status': "Enviado",
-                                  'usu_tipo_certificado': "teste",
-                                }
-                            );
-                            print("teste");*/
-                          }
-                          );
+                          setState(() {});
                           Navigator.push(
                               context,
                               MaterialPageRoute(

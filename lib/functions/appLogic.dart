@@ -82,6 +82,7 @@ List<String> usu_curso = <String>[];
 List<String> usu_email = <String>[];
 List<String> usu_img_perfil = <String>[];
 List<String> usu_nome = <String>[];
+List<String> usu_senha = <String>[];
 List<int> usu_num_matricula = <int>[];
 List<String> usu_sobrenome = <String>[];
 List<String> usu_telefone = <String>[];
@@ -99,7 +100,7 @@ Color colorTextStyle_titles = Color.fromRGBO(255, 0, 0, 1.0);
 List<Map<String, String>> listaDeMap = <Map<String, String>>[];
 
 Future getDefineDadosModal() async {
-  await getMatriculaUsuario(email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_num_matricula, usu_sobrenome, usu_telefone);
+  await getMatriculaUsuario(email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_senha, usu_num_matricula, usu_sobrenome, usu_telefone);
 
 
   final QuerySnapshot result = await Future.value(
@@ -430,7 +431,7 @@ Future<void> ShowDialogResumoDashboard(BuildContext context) async {
                 ),
                 Container(
                   alignment: Alignment.centerRight,
-                  child: Text('${somasList[1]}',
+                  child: Text('${somasList[1]} hrs',
                       textAlign: TextAlign.end,
                       style: TextStyle(color: colorTextStyle)),
                 ),
@@ -448,7 +449,7 @@ Future<void> ShowDialogResumoDashboard(BuildContext context) async {
                 ),
                 Container(
                   alignment: Alignment.centerRight,
-                  child: Text('${somasList[0]}',
+                  child: Text('${somasList[0]} hrs',
                       textAlign: TextAlign.end,
                       style: TextStyle(color: colorTextStyle)),
                 ),
@@ -466,7 +467,7 @@ Future<void> ShowDialogResumoDashboard(BuildContext context) async {
                 ),
                 Container(
                   alignment: Alignment.centerRight,
-                  child: Text('${somasList[2]}',
+                  child: Text('${somasList[2]} hrs',
                       textAlign: TextAlign.end,
                       style: TextStyle(color: colorTextStyle)),
                 ),

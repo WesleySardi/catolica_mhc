@@ -1,6 +1,6 @@
+import 'package:catolica_mhc/application/checkAuth.dart';
 import 'package:catolica_mhc/database/db_functions.dart';
 import 'package:catolica_mhc/pages_default/enviarCertificados.dart';
-import 'package:catolica_mhc/pages_default/login.dart';
 import 'package:catolica_mhc/pages_default/perfil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +12,6 @@ import '../services/auth_service.dart';
 import 'certificados.dart';
 import 'doughnutChart.dart';
 import 'notificacoes.dart';
-
-List<String> usu_curso = <String>[];
-List<String> usu_email = <String>[];
-List<String> usu_img_perfil = <String>[];
-List<String> usu_nome = <String>[];
-List<int> usu_num_matricula = <int>[];
-List<String> usu_sobrenome = <String>[];
-List<String> usu_telefone = <String>[];
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -50,7 +42,7 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   void initState() {
-    getMatriculaUsuario(AuthService.to.user.email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_num_matricula, usu_sobrenome, usu_telefone);
+    getMatriculaUsuario(email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_senha, usu_num_matricula, usu_sobrenome, usu_telefone);
     getDefineDadosGrafico();
 
     getCertificadosFirebase(matriculaList, instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
@@ -67,7 +59,7 @@ class _DashBoardState extends State<DashBoard> {
 
   // Pega os dados pro gráfico e organiza
   Future getDefineDadosGrafico() async {
-    await getMatriculaUsuario(AuthService.to.user.email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_num_matricula, usu_sobrenome, usu_telefone);
+    await getMatriculaUsuario(email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_senha, usu_num_matricula, usu_sobrenome, usu_telefone);
 
     final QuerySnapshot result = await Future.value(
         FirebaseFirestore.instance.collection("certificados_mhc").get());
@@ -209,7 +201,7 @@ class _DashBoardState extends State<DashBoard> {
                   },
                   onSelected: (value) {
                     if (value == 0) {
-                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckAuth()));
                       AuthService.to.logout();
                     }
                   }),
@@ -302,13 +294,14 @@ class _DashBoardState extends State<DashBoard> {
                   Container(
                     padding: EdgeInsets.only(top: 23),
                     child: LinearPercentIndicator(
-                      width: MediaQuery.of(context).size.width * 0.6,
+                      width: MediaQuery.of(context).size.width * 0.8,
                       animation: true,
                       alignment: MainAxisAlignment.center,
                       barRadius: Radius.circular(10),
                       lineHeight: 20.0,
                       animationDuration: 2500,
-                      percent: percent < 0 ? percent = 0 : percent,
+                      percent: percent < 0 ? percent = 0 :
+                               percent > 1 ? percent = 1 : percent,
                       center: Text(
                         '$textoProgressBar%',
                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -388,9 +381,7 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                     onPressed: () {
                       // Dashboard
-                      setState(() {
-
-                      });
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckAuth()));
                     },
                   ),
                   IconButton(
