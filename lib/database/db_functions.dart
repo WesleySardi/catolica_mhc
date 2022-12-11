@@ -168,11 +168,11 @@ void addCertificado(
 //         'usu_curso': 'Engenharia de Software',
 //         'usu_email': email,
 //         'usu_img_perfil': 'https:// aaaaa',
-//         'usu_nome': 'Davi',
-//         'usu_num_matricula': 1315684,
-//         'usu_senha': 'a37476davi',
-//         'usu_sobrenome': 'Prudente Ferreira',
-//         'usu_telefone': '(47) 99958-5464'
+//         'usu_nome': 'Usuario',
+//         'usu_num_matricula': 123456789,
+//         'usu_senha': 'teste123',
+//         'usu_sobrenome': 'de Teste',
+//         'usu_telefone': '(47) 91234-5678'
 //       })
 //       .then((value) => print("Deu certo!"))
 //       .catchError((error) => print('Deu errado :( $error'));

@@ -45,6 +45,9 @@ class _DashBoardState extends State<DashBoard> {
     getMatriculaUsuario(email, usu_curso, usu_email, usu_img_perfil, usu_nome, usu_senha, usu_num_matricula, usu_sobrenome, usu_telefone);
     getDefineDadosGrafico();
 
+    // Adicionado o usuario teste
+    //addUsuario();
+
     getCertificadosFirebase(matriculaList, instituicaoList, imgList, carga_horariaList, tipo_certificacaoList, statusList);
     _tooltipBehavior =
         TooltipBehavior(enable: true, textStyle: const TextStyle(fontSize: 16));
