@@ -5,12 +5,10 @@ Projeto PAC 4a Fase do App de Horas Complementares, desenvolvido no curso de Eng
 ### Equipe de desenvolvimento 
 
 - [Davi Prudente Ferreira](https://github.com/Davi-PF)
-- Fernanda Corrêa Borges 
-- Marcos Paulo Gonçalves Junior 
-- Victor Hugo Bosse Kühn
-- Wesley Erik Sardi
-
-
+- [Fernanda Corrêa Borges](https://github.com/fernandacorreasz)
+- [Marcos Paulo Gonçalves Junior](https://github.com/Marcos-gjr)
+- [Victor Hugo Bosse Kühn](https://github.com/VictorKuhn)
+- [Wesley Erik Sardi](https://github.com/WesleySardi)
 
 ## Instruções básicas
 
