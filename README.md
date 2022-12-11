@@ -9,3 +9,5 @@ Ao realizar o clone do repositório para seu dispositivo, será necessário ir a
 Para realizar o login na aplicação, será utilizado o email: `usuario_teste@gmail.com`; e a senha: `teste123`.
 
 O dispositivo utilizado para testes, do android emulator é foi o: `Pixel 3a API 31`.
+
+Caso de o problema de Null Sound Safety, será necessário ir
