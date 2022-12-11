@@ -2,15 +2,8 @@
 
 Projeto PAC 4a Fase do App de Horas Complementares, desenvolvido no curso de Engenharia de Software.
 
-## Getting Started
+## Instruções básicas
 
-This project is a starting point for a Flutter application.
+Ao realizar o clone do repositório para seu dispositivo, será necessário ir ao arquivo pubspec.yaml e realizar o  `pub get` das dependências. Obs.: caso necessário, após dar `pub get`, de `pub upgrade`. Além disso, há uma dependência chamada `get`, que precisa ser da versão `#5555FF^3.26.0`, então caso a versão dela seja alterada, é necessário defini-la como a versão citada para não dar problemas.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Para realizar o login na aplicação, será utilizado o email: `usuario_teste@gmail.com`; e a senha: `teste123`.
